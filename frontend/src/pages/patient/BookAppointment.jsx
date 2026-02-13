@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./BookAppointment.css";
 
@@ -55,7 +55,8 @@ export default function BookAppointment() {
 
     localStorage.setItem("appointments", JSON.stringify(appointments));
     alert("✅ Appointment request sent to doctor");
-    navigate("/patient/dashboard");
+    navigate(0);
+
   };
 
   return (

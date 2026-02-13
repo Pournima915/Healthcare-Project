@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
@@ -20,6 +20,7 @@ const DoctorRegister = () => {
     certificate: null,
   });
 
+  
   const [errors, setErrors] = useState({});
 
   // ✅ Validation Function
@@ -67,31 +68,45 @@ const DoctorRegister = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const validationErrors = validate();
-    setErrors(validationErrors);
+  const validationErrors = validate();
+  setErrors(validationErrors);
 
-    if (Object.keys(validationErrors).length !== 0) return;
+  if (Object.keys(validationErrors).length !== 0) return;
 
-    const storedDoctors =
-      JSON.parse(localStorage.getItem("doctors")) || [];
+  try {
+    const response = await fetch("http://localhost:5000/api/doctor/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...form,
+        experience: Number(form.experience), // convert to number
+      }),
+    });
 
-    const exists = storedDoctors.find(
-      (d) => d.email === form.email
-    );
+    const data = await response.json();
 
-    if (exists) {
-      setErrors({ email: "Doctor already registered" });
-      return;
-    }
+    if (!response.ok) {
+  console.log("Backend Error:", data);
+  alert(data.message || data.error);
+  return;
+}
 
-    storedDoctors.push(form);
-    localStorage.setItem("doctors", JSON.stringify(storedDoctors));
 
+    alert("Doctor registered successfully. Waiting for admin approval.");
     navigate("/doctor/login");
-  };
+
+  } catch (error) {
+    console.error(error);
+    setErrors({ general: "Server error. Please try again." });
+  }
+};
+
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;

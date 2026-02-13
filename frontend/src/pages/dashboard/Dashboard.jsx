@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUser, FaNotesMedical, FaUserMd, FaClipboardList } from "react-icons/fa";
 
 // Dummy user data for role simulation

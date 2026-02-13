@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
@@ -10,7 +10,6 @@ const DoctorLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // ✅ Validation
   const validate = () => {
     let newErrors = {};
 
@@ -40,7 +39,7 @@ const DoctorLogin = () => {
     const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
 
     if (!Array.isArray(doctors)) {
-      setErrors({ general: "System error: doctor data corrupted" });
+      setErrors({ general: "Doctor data corrupted" });
       return;
     }
 
@@ -55,17 +54,15 @@ const DoctorLogin = () => {
       return;
     }
 
-    if (doctor.status === "pending") {
-      setErrors({ general: "Account under verification by admin" });
+    if (doctor.status !== "approved") {
+      setErrors({ general: "Account not approved by admin yet" });
       return;
     }
 
-    if (doctor.status === "rejected") {
-      setErrors({ general: "Account rejected by admin" });
-      return;
-    }
-
+    // ✅ VERY IMPORTANT
     localStorage.setItem("doctorAuth", JSON.stringify(doctor));
+    localStorage.setItem("doctorToken", "true"); // <-- required for ProtectedRoute
+
     navigate("/doctor/dashboard");
   };
 
@@ -74,7 +71,6 @@ const DoctorLogin = () => {
       <form className="login-card" onSubmit={handleSubmit}>
         <h2 className="login-title">Doctor Login</h2>
 
-        {/* Email */}
         <input
           type="text"
           placeholder="Gmail *"
@@ -84,7 +80,6 @@ const DoctorLogin = () => {
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
-        {/* Password */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -107,16 +102,14 @@ const DoctorLogin = () => {
             {showPassword ? "🙈" : "👁"}
           </span>
         </div>
-        {errors.password && <p className="error">{errors.password}</p>}
 
-        {/* General Error */}
+        {errors.password && <p className="error">{errors.password}</p>}
         {errors.general && <p className="error">{errors.general}</p>}
 
         <button type="submit" className="login-btn">
           Login
         </button>
 
-        {/* Registration Link */}
         <p className="login-footer">
           Not registered?{" "}
           <span

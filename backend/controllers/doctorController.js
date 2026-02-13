@@ -3,45 +3,61 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 /*
-=====================================
-Doctor Registration
-=====================================
+===========================
+Register Doctor
+===========================
 */
 exports.registerDoctor = async (req, res) => {
   try {
-    const { name, email, password, specialization } = req.body;
+    const {
+      name,
+      email,
+      password,
+      mobile,
+      gender,
+      hospital,
+      experience,
+      qualification,
+      specialization,
+      licenseNo,
+    } = req.body;
 
-    // Check if doctor already exists
     const existingDoctor = await Doctor.findOne({ email });
     if (existingDoctor) {
       return res.status(400).json({ message: "Doctor already exists" });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create doctor (default status pending)
     const doctor = await Doctor.create({
       name,
       email,
       password: hashedPassword,
+      mobile,
+      gender,
+      hospital,
+      experience,
+      qualification,
       specialization,
+      licenseNo,
       role: "doctor",
-      status: "pending"   // you can change logic later
+      status: "pending",
     });
 
-    res.status(201).json({ message: "Doctor registered successfully" });
-
+    res.status(201).json({
+      message: "Doctor registered successfully",
+      doctor,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 
 /*
-=====================================
-Doctor Login
-=====================================
+===========================
+Login Doctor
+===========================
 */
 exports.loginDoctor = async (req, res) => {
   try {
@@ -52,22 +68,19 @@ exports.loginDoctor = async (req, res) => {
       return res.status(400).json({ message: "Doctor not found" });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, doctor.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Check approval
     if (doctor.status !== "approved") {
       return res.status(403).json({ message: "Doctor not approved yet" });
     }
 
-    // Create JWT
     const token = jwt.sign(
       {
         id: doctor._id,
-        role: "doctor"
+        role: doctor.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -80,10 +93,9 @@ exports.loginDoctor = async (req, res) => {
         name: doctor.name,
         email: doctor.email,
         role: doctor.role,
-        status: doctor.status
-      }
+        status: doctor.status,
+      },
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

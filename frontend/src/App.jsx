@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 /* Home */
@@ -24,7 +25,6 @@ import BookAppointment from "./pages/patient/BookAppointment";
 /* Video Consultation */
 import PatientVideoCall from "./pages/video/PatientVideoCall";
 import DoctorVideoCall from "./pages/video/DoctorVideoCall";
-import VideoCall from "./pages/video/VideoCall";
 
 
 /* Route Protection */
@@ -35,10 +35,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* HOME */}
-        <Route path="/" element={<Home />} />
+  
 <Route path="*" element={<Navigate to="/" />} />
 
-        <Route path="/dashboard" element={
+   <Route path="/dashboard" element={
   <ProtectedRoute>  <Dashboard />  </ProtectedRoute> } />
   
         {/* AUTH */}
@@ -69,38 +69,23 @@ function App() {
           }
         />
 
-        <Route
-          path="/patient/video-call"
+        <Route       path="/patient/video-call"
           element={
-            <ProtectedRoute role="patient">
-              <PatientVideoCall />
-            </ProtectedRoute>
+            <ProtectedRoute role="patient"> <PatientVideoCall />  </ProtectedRoute>
           }
         />
 
         {/* DOCTOR */}
-        <Route
-          path="/doctor/dashboard"
+        
+        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+
+
+        <Route        path="/doctor/video-call"
           element={
-            <ProtectedRoute role="doctor">
-              <DoctorDashboard />
-            </ProtectedRoute>
+            <ProtectedRoute role="doctor">      <DoctorVideoCall />    </ProtectedRoute>
           }
         />
-
-        <Route
-          path="/doctor/video-call"
-          element={
-            <ProtectedRoute role="doctor">
-              <DoctorVideoCall />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-  path="/video-call"
-  element={<VideoCall />}
-/>
-
+       
         {/* ADMIN */}
         <Route
           path="/admin/dashboard"

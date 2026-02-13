@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
@@ -15,7 +15,7 @@ export default function PatientLogin() {
   const validate = () => {
     let newErrors = {};
 
-    if (!email) {
+    if (!email.trim()) {
       newErrors.email = "Email is required";
     }
 
@@ -53,7 +53,6 @@ export default function PatientLogin() {
         }
       );
 
-      // ✅ Safely handle non-JSON response
       const text = await response.text();
       let data;
 
@@ -65,11 +64,10 @@ export default function PatientLogin() {
 
       if (!response.ok) {
         setErrors({ general: data.message || "Login failed" });
-        setLoading(false);
         return;
       }
 
-      // ✅ Save token + patient
+      // ✅ Save token and user data
       localStorage.setItem("patientToken", data.token);
       localStorage.setItem("patientAuth", JSON.stringify(data.patient));
 

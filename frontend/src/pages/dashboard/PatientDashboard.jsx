@@ -1,15 +1,30 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  FaUserCircle,
+  FaSignOutAlt,
+  FaCalendarCheck,
+  FaClock,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaRedo,
+  FaVideo,
+  FaBell,
+  FaBars,
+  FaHome,
+  FaPlusCircle,
+} from "react-icons/fa";
+
 import "./PatientDashboard.css";
 import PatientAppointments from "../patient/PatientAppointments";
+import BookAppointment from "../patient/BookAppointment";
 
 export default function PatientDashboard() {
   const navigate = useNavigate();
 
   const [patient, setPatient] = useState(null);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [darkMode, setDarkMode] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [stats, setStats] = useState({
     pending: 0,
@@ -18,14 +33,10 @@ export default function PatientDashboard() {
     rescheduled: 0,
   });
 
-  /* 🔐 JWT SECURE PROTECTION */
+  /* Auth Protection */
   useEffect(() => {
     const token = localStorage.getItem("patientToken");
-
-if (!token) {
-  navigate("/patient/login");
-}
-   const storedPatient = localStorage.getItem("patientAuth");
+    const storedPatient = localStorage.getItem("patientAuth");
 
     if (!token || !storedPatient) {
       navigate("/patient/login");
@@ -35,7 +46,7 @@ if (!token) {
     setPatient(JSON.parse(storedPatient));
   }, [navigate]);
 
-  /* 📊 Animated Counter */
+  /* Stats Calculation */
   useEffect(() => {
     if (!patient) return;
 
@@ -46,156 +57,126 @@ if (!token) {
       (a) => a.patientEmail === patient.email
     );
 
-    const finalStats = {
-      pending: 0,
-      accepted: 0,
-      rejected: 0,
-      rescheduled: 0,
-    };
+    const result = { pending: 0, accepted: 0, rejected: 0, rescheduled: 0 };
 
     myAppointments.forEach((a) => {
-      if (finalStats[a.status] !== undefined) {
-        finalStats[a.status]++;
-      }
+      if (result[a.status] !== undefined) result[a.status]++;
     });
 
-    // fast animation
-    let start = 0;
-    const interval = setInterval(() => {
-      start++;
-      setStats({
-        pending: Math.min(start, finalStats.pending),
-        accepted: Math.min(start, finalStats.accepted),
-        rejected: Math.min(start, finalStats.rejected),
-        rescheduled: Math.min(start, finalStats.rescheduled),
-      });
-
-      if (start > 20) clearInterval(interval);
-    }, 40);
-
+    setStats(result);
   }, [patient]);
 
-  /* 🔔 Real-time Notifications (Simulated) */
+  /* Notifications */
   useEffect(() => {
     const interval = setInterval(() => {
       setNotifications((prev) => [
         ...prev,
-        "📢 New health tip available!"
+        "Appointment status updated",
       ]);
-    }, 15000);
-
+    }, 20000);
     return () => clearInterval(interval);
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("patientAuth");
-    localStorage.removeItem("patientToken");
+    localStorage.clear();
     navigate("/patient/login");
   };
 
   if (!patient) return null;
 
   return (
-    <div className={`pd-dashboard ${darkMode ? "dark" : ""}`}>
+    <div className="dashboard-container">
 
-      {/* 🔹 TOP NAVBAR */}
-      <header className="pd-topbar">
-        <h2>🩺 TeleMed</h2>
+      {/* Topbar */}
+      <header className="topbar">
+        <div className="left-top">
+          <FaBars
+            className="menu-toggle"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          />
+          <h2>🩺 TeleMed</h2>
+        </div>
 
-        <div className="pd-right">
-
-          {/* Dark Mode */}
-          <button
-            className="toggle-btn"
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
-
-          {/* Notifications */}
-          <div className="notification-box">
-            🔔 {notifications.length}
-          </div>
-
-          {/* Profile Dropdown */}
-          <div
-            className="profile-area"
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            👤 {patient.name}
-
-            {showDropdown && (
-              <div className="dropdown">
-                <p onClick={logout}>
-                  <img
-                    src="/mnt/data/84cb5613-0760-45c3-a8c5-cac7640b52d3.png"
-                    alt="logout"
-                    className="icon"
-                  />
-                  Logout
-                </p>
-              </div>
+        <div className="right-top">
+          <div className="notification-icon">
+            <FaBell size={18} />
+            {notifications.length > 0 && (
+              <span className="notif-badge">
+                {notifications.length}
+              </span>
             )}
           </div>
 
+          <div className="profile-area">
+            <FaUserCircle size={24} />
+            <span>{patient.name}</span>
+            <button className="logout-btn" onClick={logout}>
+              <FaSignOutAlt />
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="pd-body">
+      <div className="body-container">
 
         {/* Sidebar */}
-        <aside className="pd-sidebar">
+        <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
           <ul>
             <li
               className={activeTab === "dashboard" ? "active" : ""}
               onClick={() => setActiveTab("dashboard")}
             >
-              🏠 Dashboard
+              <FaHome /> <span>Dashboard</span>
             </li>
 
             <li
               className={activeTab === "appointments" ? "active" : ""}
               onClick={() => setActiveTab("appointments")}
             >
-              📅 Appointments
+              <FaCalendarCheck /> <span>Appointments</span>
             </li>
 
+            {/* ✅ NEW BOOK APPOINTMENT */}
             <li
-              onClick={() => navigate("/patient/video-call")}
+              className={activeTab === "book" ? "active" : ""}
+              onClick={() => setActiveTab("book")}
             >
-              <img
-                src="/mnt/data/79a059f1-43e4-4934-9a24-c249a99874f0.png"
-                alt="video"
-                className="icon"
-              />
-              Video Consultation
+              <FaPlusCircle /> <span>Book Appointment</span>
+            </li>
+
+            <li onClick={() => navigate("/patient/video-call")}>
+              <FaVideo /> <span>Video Call</span>
             </li>
           </ul>
         </aside>
 
-        {/* Main */}
-        <main className="pd-main">
+        {/* Main Content */}
+        <main className="main-content">
 
           {activeTab === "dashboard" && (
-            <div className="cards">
+            <div className="cards-grid">
 
-              <div className="card">
-                <h3>Pending</h3>
+              <div className="card pending">
+                <FaClock size={24} />
+                <h4>Pending</h4>
                 <p>{stats.pending}</p>
               </div>
 
-              <div className="card">
-                <h3>Accepted</h3>
+              <div className="card accepted">
+                <FaCheckCircle size={24} />
+                <h4>Accepted</h4>
                 <p>{stats.accepted}</p>
               </div>
 
-              <div className="card">
-                <h3>Rejected</h3>
+              <div className="card rejected">
+                <FaTimesCircle size={24} />
+                <h4>Rejected</h4>
                 <p>{stats.rejected}</p>
               </div>
 
-              <div className="card">
-                <h3>Rescheduled</h3>
+              <div className="card rescheduled">
+                <FaRedo size={24} />
+                <h4>Rescheduled</h4>
                 <p>{stats.rescheduled}</p>
               </div>
 
@@ -203,9 +184,9 @@ if (!token) {
           )}
 
           {activeTab === "appointments" && <PatientAppointments />}
+          {activeTab === "book" && <BookAppointment />}
 
         </main>
-
       </div>
     </div>
   );

@@ -1,51 +1,48 @@
-.meet-container {
-  background: #0f172a;
-  color: white;
-  min-height: 100vh;
-  padding: 20px;
-  text-align: center;
-}
-
-.role-label {
-  opacity: 0.8;
-  margin-bottom: 10px;
-}
-
-.videos {
+.video-page {
+  height: 100vh;
   display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: white;
+}
+
+.video-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+}
+
+.call-info {
+  display: flex;
+  align-items: center;
   gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
 }
 
-video {
-  width: 45%;
-  height: 300px;
-  background: black;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.controls {
-  margin-top: 20px;
-}
-
-.primary {
-  background: #2563eb;
-  padding: 12px 24px;
-  border-radius: 20px;
+.call-info button {
+  background: #ef4444;
   border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
   color: white;
-  font-size: 16px;
   cursor: pointer;
 }
 
-.danger {
-  background: #dc2626;
-  padding: 12px 24px;
-  border-radius: 20px;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
+.video-container {
+  flex: 1;
+}
+
+.loader {
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
 }

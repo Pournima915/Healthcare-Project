@@ -1,30 +1,36 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PatientAppointments.css";
 
 export default function PatientAppointments() {
-  const patient = JSON.parse(localStorage.getItem("patient"));
-
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
+    const storedPatient = localStorage.getItem("patient");
+
+    if (!storedPatient) {
+      return;
+    }
+
+    const patient = JSON.parse(storedPatient);
+
     const allAppointments =
       JSON.parse(localStorage.getItem("appointments")) || [];
 
-   const myAppointments = allAppointments.filter(
-  (a) =>
-    a.patientEmail === patient.email &&
-    a.status === "accepted"
-);
+    const myAppointments = allAppointments.filter(
+      (a) =>
+        a.patientEmail === patient.email &&
+        a.status === "accepted"
+    );
 
     setAppointments(myAppointments);
-  }, [patient.email]);
+  }, []); // 🔥 IMPORTANT: EMPTY DEPENDENCY ARRAY
 
   return (
     <div className="pa-container">
       <h2>📅 My Appointments</h2>
 
       {appointments.length === 0 ? (
-        <p>No appointments booked yet.</p>
+        <p>No accepted appointments yet.</p>
       ) : (
         <table className="pa-table">
           <thead>
@@ -37,8 +43,8 @@ export default function PatientAppointments() {
             </tr>
           </thead>
           <tbody>
-            {appointments.map((a) => (
-              <tr key={a.id}>
+            {appointments.map((a, index) => (
+              <tr key={index}>
                 <td>{a.doctorName}</td>
                 <td>{a.date}</td>
                 <td>{a.time}</td>
@@ -48,11 +54,9 @@ export default function PatientAppointments() {
                   </span>
                 </td>
                 <td>
-                  {a.status === "pending" && "Waiting for doctor approval"}
-                  {a.status === "accepted" && "✅ Appointment confirmed"}
-                  {a.status === "rejected" && "❌ Doctor rejected request"}
-                  {a.status === "rescheduled" &&
-                    "🔁 Doctor requested reschedule"}
+                  {a.status === "accepted"
+                    ? "✅ Appointment confirmed"
+                    : "Waiting"}
                 </td>
               </tr>
             ))}

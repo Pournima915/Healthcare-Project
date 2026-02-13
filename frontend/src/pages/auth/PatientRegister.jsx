@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
@@ -16,6 +16,7 @@ export default function PatientRegister() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     let newErrors = {};
@@ -34,38 +35,52 @@ export default function PatientRegister() {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    if (!form.mobile)
-      {
+    if (!form.mobile) {
       newErrors.mobile = "Mobile Number is required";
-    } else if (form.mobile.length < 6) {
-      newErrors.mobile = "Mobile number must be at least 10 digit";
+    } else if (form.mobile.length < 10) {
+      newErrors.mobile = "Mobile number must be 10 digits";
     }
-     
+
     if (!form.gender) newErrors.gender = "Gender is required";
     if (!form.address) newErrors.address = "Address is required";
 
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (Object.keys(validationErrors).length !== 0) return;
+  const validationErrors = validate();
+  setErrors(validationErrors);
 
-    const patients = JSON.parse(localStorage.getItem("patients")) || [];
+  if (Object.keys(validationErrors).length !== 0) return;
 
-    const exists = patients.some((p) => p.email === form.email);
-    if (exists) {
-      setErrors({ email: "Email already registered" });
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/doctor/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setErrors({ general: data.message || "Registration failed" });
       return;
     }
 
-    patients.push(form);
-    localStorage.setItem("patients", JSON.stringify(patients));
-    navigate("/patient/login");
-  };
+    alert("Registration successful. Wait for admin approval.");
+    navigate("/doctor/login");
+  } catch (error) {
+    setErrors({ general: "Server error" });
+  }
+};
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -75,12 +90,22 @@ export default function PatientRegister() {
       <form className="login-card" onSubmit={handleSubmit}>
         <h2 className="login-title">Patient Registration</h2>
 
-        <input name="name" placeholder="Full Name *" className="login-input"
-          value={form.name} onChange={handleChange} />
+        <input
+          name="name"
+          placeholder="Full Name *"
+          className="login-input"
+          value={form.name}
+          onChange={handleChange}
+        />
         {errors.name && <p className="error">{errors.name}</p>}
 
-        <input name="email" placeholder="Gmail *" className="login-input"
-          value={form.email} onChange={handleChange} />
+        <input
+          name="email"
+          placeholder="Gmail *"
+          className="login-input"
+          value={form.email}
+          onChange={handleChange}
+        />
         {errors.email && <p className="error">{errors.email}</p>}
 
         <div style={{ position: "relative" }}>
@@ -108,13 +133,21 @@ export default function PatientRegister() {
         </div>
         {errors.password && <p className="error">{errors.password}</p>}
 
-        <input name="mobile" placeholder="Mobile *"
+        <input
+          name="mobile"
+          placeholder="Mobile *"
           className="login-input"
-          value={form.mobile} onChange={handleChange} />
+          value={form.mobile}
+          onChange={handleChange}
+        />
         {errors.mobile && <p className="error">{errors.mobile}</p>}
 
-        <select name="gender" className="login-input"
-          value={form.gender} onChange={handleChange}>
+        <select
+          name="gender"
+          className="login-input"
+          value={form.gender}
+          onChange={handleChange}
+        >
           <option value="">Select Gender *</option>
           <option>Male</option>
           <option>Female</option>
@@ -122,17 +155,27 @@ export default function PatientRegister() {
         </select>
         {errors.gender && <p className="error">{errors.gender}</p>}
 
-        <input name="address" placeholder="Address *"
+        <input
+          name="address"
+          placeholder="Address *"
           className="login-input"
-          value={form.address} onChange={handleChange} />
+          value={form.address}
+          onChange={handleChange}
+        />
         {errors.address && <p className="error">{errors.address}</p>}
 
-        <button className="login-btn">Register</button>
+        {errors.general && <p className="error">{errors.general}</p>}
+
+        <button className="login-btn" disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </button>
 
         <p className="login-footer">
           Already registered?{" "}
-          <span className="login-link"
-            onClick={() => navigate("/patient/login")}>
+          <span
+            className="login-link"
+            onClick={() => navigate("/patient/login")}
+          >
             Login
           </span>
         </p>
