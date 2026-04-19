@@ -1,0 +1,109 @@
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #e0f2fe, #f8fafc);
+  padding: 40px 20px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HEADER */
+.home-header {
+  text-align: center;
+  max-width: 900px;
+  margin: auto;
+}
+
+.home-header h1 {
+  font-size: 2.4rem;
+  color: #0f172a;
+}
+
+.home-header h1 span {
+  color: #0284c7;
+}
+
+.home-header p {
+  margin-top: 15px;
+  color: #475569;
+  font-size: 1.05rem;
+}
+
+/* ROLE SECTION */
+.role-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 60px auto;
+}
+
+/* ROLE CARD */
+.role-card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.role-card h2 {
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.role-card p {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+/* BUTTON GROUP */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn.primary {
+  background: #0284c7;
+  color: white;
+}
+
+.btn.outline {
+  border: 2px solid #0284c7;
+  color: #0284c7;
+}
+
+/* APPOINTMENT */
+.appointment-box {
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  padding: 30px;
+  border-radius: 14px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.appointment-box p {
+  margin-top: 8px;
+  color: #cbd5f5;
+}
+
+/* ADMIN */
+.admin-access {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.admin-access a {
+  color: #64748b;
+  font-size: 0.9rem;
+}

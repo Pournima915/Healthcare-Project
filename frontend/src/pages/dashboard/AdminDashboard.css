@@ -1,0 +1,124 @@
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f8;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: 240px;
+  background: #1e3a8a;
+  color: white;
+  padding: 20px;
+}
+
+.admin-sidebar h2 {
+  margin-bottom: 30px;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-sidebar li {
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.admin-sidebar li:hover {
+  background: #2563eb;
+}
+
+.logout {
+  background: #dc2626;
+}
+
+/* Main */
+.admin-main {
+  flex: 1;
+  padding: 30px;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background: #f1f5f9;
+  text-align: left;
+}
+
+/* Badges */
+.badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: white;
+}
+
+.badge.pending {
+  background: #f59e0b;
+}
+
+.badge.approved {
+  background: #16a34a;
+}
+
+.badge.rejected {
+  background: #dc2626;
+}
+
+/* Buttons */
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  margin-right: 5px;
+}
+
+button.reject {
+  background: #dc2626;
+}
+.view-btn,
+.download-btn {
+  margin-right: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.view-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.download-btn {
+  background: #16a34a;
+  color: white;
+}
+.delete {
+  background: #b91c1c;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
