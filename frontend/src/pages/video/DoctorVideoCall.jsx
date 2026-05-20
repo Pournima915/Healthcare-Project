@@ -1,64 +1,63 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./VideoCall.css";
+import { useNavigate, useParams } from "react-router-dom";
+import socket from "../../socket";
 
 export default function DoctorVideoCall() {
   const navigate = useNavigate();
-  const jitsiContainerRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [seconds, setSeconds] = useState(0);
+  const { appointmentId } = useParams();
+  const jitsiRef = useRef(null);
+  const [api, setApi] = useState(null);
 
   useEffect(() => {
-    const domain = "meet.jit.si";
+    // Load Jitsi API
+    if (!window.JitsiMeetExternalAPI) {
+      alert("Jitsi Meet API not loaded!");
+      return;
+    }
 
+    const domain = "meet.jit.si";
     const options = {
-      roomName: "TeleMed-Consultation",
+      roomName: `TeleMed-${appointmentId}`,
+      parentNode: jitsiRef.current,
       width: "100%",
       height: "100%",
-      parentNode: jitsiContainerRef.current,
-      userInfo: {
-        displayName: "Doctor",
-      },
+      configOverwrite: { startWithAudioMuted: false, startWithVideoMuted: false },
+      interfaceConfigOverwrite: { DEFAULT_REMOTE_DISPLAY_NAME: "Patient" },
     };
 
-    const api = new window.JitsiMeetExternalAPI(domain, options);
+    const jitsi = new window.JitsiMeetExternalAPI(domain, options);
+    setApi(jitsi);
 
-    api.addEventListener("videoConferenceJoined", () => {
-      setLoading(false);
+    // Notify patient that doctor is in the room
+    socket.emit("doctor-in-room", { appointmentId });
+
+    // Listen for hangup
+    jitsi.addEventListener("readyToClose", () => {
+      jitsi.dispose();
+      navigate("/doctor/dashboard");
     });
 
-    const timer = setInterval(() => {
-      setSeconds((prev) => prev + 1);
-    }, 1000);
-
     return () => {
-      api.dispose();
-      clearInterval(timer);
+      jitsi.dispose();
     };
-  }, []);
+  }, [appointmentId, navigate]);
 
-  const formatTime = () => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
+  // Handle patient hangup
+  useEffect(() => {
+    socket.on("end-call", (data) => {
+      if (data.appointmentId === appointmentId) {
+        alert("Patient ended the call.");
+        api?.dispose();
+        navigate("/doctor/dashboard");
+      }
+    });
+
+    return () => socket.off("end-call");
+  }, [api, appointmentId, navigate]);
 
   return (
-    <div className="video-page">
-
-      <div className="video-header">
-        <h2>🩺 TeleMed Doctor Panel</h2>
-        <div className="call-info">
-          <span>🩻 Doctor</span>
-          <span>⏱ {formatTime()}</span>
-          <button onClick={() => navigate(-1)}>End</button>
-        </div>
-      </div>
-
-      {loading && <div className="loader">Waiting for patient...</div>}
-
-      <div className="video-container" ref={jitsiContainerRef} />
-
+    <div style={{ width: "100%", height: "100vh" }}>
+      <div ref={jitsiRef} style={{ width: "100%", height: "100%" }} />
     </div>
   );
 }

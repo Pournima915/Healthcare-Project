@@ -1,0 +1,124 @@
+/* Container */
+.doctor-container {
+  padding: 20px;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+/* Title */
+.doctor-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Table */
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Header */
+.appointment-table thead {
+  background: #4a6cf7;
+  color: white;
+}
+
+.appointment-table th {
+  padding: 12px;
+  text-align: center;
+}
+
+/* Rows */
+.appointment-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* Hover */
+.appointment-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* No data */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+}
+
+/* Status */
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.rescheduled {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status.completed {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+/* Buttons */
+.btn {
+  padding: 6px 10px;
+  margin: 2px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn.accept {
+  background: #28a745;
+  color: white;
+}
+
+.btn.complete {
+  background: #6c757d;
+  color: white;
+}
+
+.btn.reschedule {
+  background: #ffc107;
+  color: black;
+}
+
+.btn.confirm {
+  background: #007bff;
+  color: white;
+}
+
+/* Reschedule box */
+.reschedule-box {
+  margin-top: 8px;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}

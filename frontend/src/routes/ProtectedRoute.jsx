@@ -1,11 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children, role }) => {
+
   // Doctor protection
   if (role === "doctor") {
     const doctor = JSON.parse(localStorage.getItem("doctorAuth"));
-    if (!doctor || doctor.status !== "approved") {
+
+if (!doctor) {
+  return <Navigate to="/doctor/login" />;
+}
+
+ /*   if (!doctor) {
+      return <Navigate to="/doctor/login" replace />;
+    }
+*/
+    // Optional approval check
+    if (doctor.status && doctor.status !== "approved") {
       return <Navigate to="/doctor/login" replace />;
     }
   }
@@ -24,7 +35,7 @@ const ProtectedRoute = ({ children, role }) => {
     }
   }
 
-  return children; // ✅ removed invalid token usage
+  return children;
 };
 
 export default ProtectedRoute;

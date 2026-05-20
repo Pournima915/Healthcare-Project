@@ -1,2 +1,14 @@
-.env
 node_modules/
+venv/
+env/
+__pycache__/
+*.zip
+*.rar
+*.7z
+*.mp4
+*.csv
+*.log
+dist/
+build/
+.env
+

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
 const DoctorRegister = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  const [useAutoLocation, setUseAutoLocation] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -18,96 +20,194 @@ const DoctorRegister = () => {
     specialization: "",
     licenseNo: "",
     certificate: null,
+    state: "",
+    district: "",
+    area: "",
   });
 
-  
+  const [otherSpecialization, setOtherSpecialization] = useState("");
+  const fileInput = useRef(null);
   const [errors, setErrors] = useState({});
 
-  // ✅ Validation Function
+  // ✅ SPECIALIZATION OPTIONS
+  const specializations = [
+    "Dentist",
+    "Cardiologist",
+    "Neurologist",
+    "Orthopedic",
+    "Pediatrician",
+    "Gynecologist",
+    "Psychiatrist",
+    "General Physician",
+    "Other",
+  ];
+
+  // ✅ STATES + DISTRICTS (example)
+  const statesData = {
+    Maharashtra: ["Ahilyanagar (Ahmednagar)","Akola","Amravati","Beed","Bhandara","Buldhana","Chandrapur","Chhatrapati Sambhajinagar (Aurangabad)","Dharashiv (Osmanabad)","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai City","Mumbai Suburban","Nagpur","Nanded","Nandurbar","Nashik","Palghar","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurg","Solapur","Thane","Wardha","Washim","Yavatmal"],
+    Gujarat: ["Ahmedabad","Amreli","Anand","Aravalli","Banaskantha","Bharuch","Bhavnagar","Botad","Chhota Udaipur","Dahod","Dang","Devbhoomi Dwarka","Gandhinagar","Gir Somnath","Jamnagar","Junagadh","Kachchh (Kutch)","Kheda","Mahisagar","Mehsana","Morbi","Narmada","Navsari",  "Panchmahal","Patan","Porbandar","Rajkot","Sabarkantha","Surat","Surendranagar","Tapi","Vadodara","Valsad"],
+    Karnataka: ["Bagalkot","Ballari (Bellary)","Belagavi (Belgaum)","Bengaluru Rural","Bengaluru Urban","Bidar","Chamarajanagar","Chikkaballapur","Chikkamagaluru","Chitradurga","Dakshina Kannada","Davanagere","Dharwad","Gadag","Hassan","Haveri","Kalaburagi (Gulbarga)","Kodagu","Kolar","Koppal","Mandya","Mysuru (Mysore)","Raichur","Ramanagara","Shivamogga (Shimoga)","Tumakuru (Tumkur)","Udupi","Uttara Kannada","Vijayapura (Bijapur)","Vijayanagara","Yadgir "],
+    Rajasthan: ["Jaipur", "Jodhpur", "Kota", "Ajmer", "Udaipur", "Bikaner", "Alwar", "Bhilwara", "Barmer", "Nagaur", "Chittorgarh"],
+    TamilNadu: ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli","Erode", "Vellore", "Thanjavur", "Kanchipuram"
+  ]
+  };
+
+  // =============================
+  // AUTO LOCATION
+  // =============================
+  const getCurrentLocation = () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+
+      const data = await res.json();
+
+      console.log("FULL LOCATION DATA:", data); // 🔍 debug
+
+      // ✅ FIX: handle multiple possible fields
+      const state =
+        data.address.state ||
+        data.address.region ||
+        "";
+
+      const district =
+        data.address.county ||
+        data.address.city ||
+        data.address.district ||
+        data.address.state_district ||
+        "";
+
+      const area =
+        data.address.suburb ||
+        data.address.neighbourhood ||
+        data.address.village ||
+        data.address.road ||
+        data.address.hamlet ||
+        "";
+
+      setForm((prev) => ({
+        ...prev,
+        state,
+        district,
+        area,
+      }));
+
+      alert(" Location fetched successfully");
+
+    } catch (err) {
+      console.log(err);
+      alert("Failed to fetch location");
+    }
+  });
+};
+
+  // =============================
+  // VALIDATION
+  // =============================
   const validate = () => {
     let newErrors = {};
 
-    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.name.trim()) newErrors.name = "Name required";
 
-    if (!form.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(form.email)) {
-      newErrors.email = "Enter valid Gmail address";
-    }
+    if (!form.email || !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(form.email))
+      newErrors.email = "Valid Gmail required";
 
-    if (!form.password) {
-      newErrors.password = "Password is required";
-    } else if (form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
+    if (!form.password || form.password.length < 6)
+      newErrors.password = "Min 6 characters required";
 
-    if (!form.mobile) {
-      newErrors.mobile = "Mobile number is required";
-    } else if (!/^[0-9]{10}$/.test(form.mobile)) {
-      newErrors.mobile = "Mobile number must be 10 digits";
-    }
+    if (!form.mobile || !/^[0-9]{10}$/.test(form.mobile))
+      newErrors.mobile = "10 digit mobile required";
 
-    if (!form.gender) newErrors.gender = "Gender is required";
-    if (!form.hospital) newErrors.hospital = "Hospital/Clinic name is required";
+    if (!form.gender) newErrors.gender = "Select gender";
 
-    if (!form.experience) {
-      newErrors.experience = "Experience is required";
-    } else if (!/^[0-9]+$/.test(form.experience)) {
-      newErrors.experience = "Experience must be in years (digits only)";
-    }
+    if (!form.hospital) newErrors.hospital = "Hospital required";
+
+    if (!form.experience) newErrors.experience = "Experience required";
 
     if (!form.qualification)
-      newErrors.qualification = "Qualification is required";
+      newErrors.qualification = "Qualification required";
 
     if (!form.specialization)
-      newErrors.specialization = "Specialization is required";
+      newErrors.specialization = "Select specialization";
 
-    if (!form.licenseNo)
-      newErrors.licenseNo = "License number is required";
+    if (
+      form.specialization === "Other" &&
+      !otherSpecialization.trim()
+    ) {
+      newErrors.specialization = "Enter specialization";
+    }
+
+    if (!form.licenseNo) newErrors.licenseNo = "License required";
+
+    if (!form.state) newErrors.state = "Select state";
+    if (!form.district) newErrors.district = "Select district";
+    if (!form.area) newErrors.area = "Enter area";
 
     return newErrors;
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  // =============================
+  // SUBMIT
+  // =============================
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const validationErrors = validate();
-  setErrors(validationErrors);
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length !== 0) return;
 
-  if (Object.keys(validationErrors).length !== 0) return;
+    try {
+      const formData = new FormData();
 
-  try {
-    const response = await fetch("http://localhost:5000/api/doctor/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...form,
-        experience: Number(form.experience), // convert to number
-      }),
-    });
+      const finalSpecialization =
+        form.specialization === "Other"
+          ? otherSpecialization
+          : form.specialization;
 
-    const data = await response.json();
+      Object.keys(form).forEach((key) => {
+        if (key === "specialization") {
+          formData.append("specialization", finalSpecialization);
+        } else {
+          formData.append(key, form[key]);
+        }
+      });
 
-    if (!response.ok) {
-  console.log("Backend Error:", data);
-  alert(data.message || data.error);
-  return;
-}
+      const res = await fetch(
+        "http://localhost:5000/api/doctor/register",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
+      const data = await res.json();
 
-    alert("Doctor registered successfully. Waiting for admin approval.");
-    navigate("/doctor/login");
+      if (!res.ok) {
+        alert(data.message || data.error);
+        return;
+      }
 
-  } catch (error) {
-    console.error(error);
-    setErrors({ general: "Server error. Please try again." });
-  }
-};
+      alert("Doctor Registered ✅");
+      navigate("/doctor/login");
 
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-
+  // =============================
+  // HANDLE CHANGE
+  // =============================
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -123,138 +223,138 @@ const DoctorRegister = () => {
       <form className="login-card" onSubmit={handleSubmit}>
         <h2 className="login-title">Doctor Registration</h2>
 
-        {/* Name */}
-        <input
-          name="name"
-          placeholder="Full Name *"
+        <input name="name" placeholder="Full Name *"
           className="login-input"
           value={form.name}
           onChange={handleChange}
         />
-        {errors.name && <p className="error">{errors.name}</p>}
 
-        {/* Email */}
-        <input
-          name="email"
-          placeholder="Gmail *"
+        <input name="email" placeholder="Gmail *"
           className="login-input"
           value={form.email}
           onChange={handleChange}
         />
-        {errors.email && <p className="error">{errors.email}</p>}
 
-        {/* Password */}
+        {/* PASSWORD */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
             name="password"
-            placeholder="Password * (min 6 characters)"
+            placeholder="Password *"
             className="login-input"
             value={form.password}
             onChange={handleChange}
-            style={{ paddingRight: "40px" }}
           />
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-            }}
-          >
-            {showPassword ? "🙈" : "👁"}
+          <span onClick={() => setShowPassword(!showPassword)}
+            style={{ position: "absolute", right: 10, top: 12, cursor: "pointer" }}>
+            {showPassword ? "🙈" : "👁️"}
           </span>
         </div>
-        {errors.password && <p className="error">{errors.password}</p>}
 
-        {/* Mobile */}
-        <input
-          name="mobile"
-          placeholder="Mobile Number *"
+        <input name="mobile" placeholder="Mobile *"
           className="login-input"
           value={form.mobile}
           onChange={handleChange}
         />
-        {errors.mobile && <p className="error">{errors.mobile}</p>}
 
-        {/* Gender Dropdown */}
-        <select
-          name="gender"
-          className="login-input"
+        <select name="gender" className="login-input"
           value={form.gender}
-          onChange={handleChange}
-        >
+          onChange={handleChange}>
           <option value="">Select Gender *</option>
           <option>Male</option>
           <option>Female</option>
           <option>Other</option>
         </select>
-        {errors.gender && <p className="error">{errors.gender}</p>}
 
-        {/* Hospital */}
-        <input
-          name="hospital"
-          placeholder="Hospital / Clinic Name *"
+        <input name="hospital" placeholder="Hospital *"
           className="login-input"
           value={form.hospital}
           onChange={handleChange}
         />
-        {errors.hospital && <p className="error">{errors.hospital}</p>}
 
-        {/* Experience */}
+        {/* EXPERIENCE FIX */}
         <input
+          type="number"
           name="experience"
-          placeholder="Experience in Years *"
+          placeholder="Experience (Years) *"
           className="login-input"
           value={form.experience}
           onChange={handleChange}
         />
-        {errors.experience && <p className="error">{errors.experience}</p>}
 
-        {/* Qualification */}
-        <input
-          name="qualification"
-          placeholder="Qualification *"
+        <input name="qualification" placeholder="Qualification *"
           className="login-input"
           value={form.qualification}
           onChange={handleChange}
         />
-        {errors.qualification && (
-          <p className="error">{errors.qualification}</p>
-        )}
 
-        {/* Specialization */}
-        <input
+        {/* SPECIALIZATION */}
+        <select
           name="specialization"
-          placeholder="Specialization *"
           className="login-input"
           value={form.specialization}
           onChange={handleChange}
-        />
-        {errors.specialization && (
-          <p className="error">{errors.specialization}</p>
+        >
+          <option value="">Select Specialization *</option>
+          {specializations.map((s, i) => (
+            <option key={i}>{s}</option>
+          ))}
+        </select>
+
+        {form.specialization === "Other" && (
+          <input
+            className="login-input"
+            placeholder="Enter specialization"
+            value={otherSpecialization}
+            onChange={(e) => setOtherSpecialization(e.target.value)}
+          />
         )}
 
-        {/* License */}
-        <input
-          name="licenseNo"
-          placeholder="Medical License Number *"
+        <input name="licenseNo" placeholder="License No *"
           className="login-input"
           value={form.licenseNo}
           onChange={handleChange}
         />
-        {errors.licenseNo && <p className="error">{errors.licenseNo}</p>}
 
-        {/* Upload Certificate (Optional) */}
-        <label style={{ fontSize: "16px", marginTop: "10px" }}>
-          Upload Verification Certificate (Image/PDF)
-        </label>
+        {/* STATE */}
+        <select
+          name="state"
+          className="login-input"
+          value={form.state}
+          onChange={handleChange}
+        >
+          <option value="">Select State *</option>
+          {Object.keys(statesData).map((state, i) => (
+            <option key={i}>{state}</option>
+          ))}
+        </select>
+
+        {/* DISTRICT */}
+        <select
+          name="district"
+          className="login-input"
+          value={form.district}
+          onChange={handleChange}
+        >
+          <option value="">Select District *</option>
+          {(statesData[form.state] || []).map((d, i) => (
+            <option key={i}>{d}</option>
+          ))}
+        </select>
+
+        {/* AREA */}
+        <input
+          name="area"
+          placeholder="Area / Locality *"
+          className="login-input"
+          value={form.area}
+          onChange={handleChange}
+        />
+
+        {/* FILE */}
         <input
           type="file"
           name="certificate"
-          accept=".jpg,.jpeg,.png,.pdf"
           className="login-input"
           onChange={handleChange}
         />
@@ -263,10 +363,8 @@ const DoctorRegister = () => {
 
         <p className="login-footer">
           Already registered?{" "}
-          <span
-            className="login-link"
-            onClick={() => navigate("/doctor/login")}
-          >
+          <span className="login-link"
+          onClick={() => navigate("/doctor/login")}>
             Login
           </span>
         </p>

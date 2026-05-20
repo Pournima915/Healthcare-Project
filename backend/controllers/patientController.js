@@ -1,51 +1,78 @@
-
 const Patient = require("../models/Patient");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// REGISTER
+/* ================= REGISTER ================= */
 exports.registerPatient = async (req, res) => {
   try {
     const { name, email, password, mobile, gender, address } = req.body;
-    const normalizedEmail = email.toLowerCase();
 
-    const existing = await Patient.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already exists" });
+    if (!name || !email || !password || !mobile || !gender || !address) {
+      return res.status(400).json({
+        message: "All required fields must be filled",
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const existing = await Patient.findOne({ email });
 
-    const patient = await Patient.create({
+    if (existing) {
+      return res.status(400).json({
+        message: "Email already exists",
+      });
+    }
+
+    // Auto increment ID
+    const last = await Patient.findOne().sort({ patientId: -1 });
+    const patientId = last ? last.patientId + 1 : 1;
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    await Patient.create({
+      patientId,
       name,
-      email: normalizedEmail,
-      password: hashedPassword,
+      email,
+      password: hashed,
       mobile,
       gender,
       address,
-      });
+    });
 
-    res.status(201).json({ message: "Patient registered successfully" });
+    res.status(201).json({
+      message: "Patient registered successfully",
+    });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// LOGIN
+
+/* ================= LOGIN ================= */
 exports.loginPatient = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const normalizedEmail = email.toLowerCase();
 
-    const existing = await Patient.findOne({ email: normalizedEmail });
-    if (!patient) {
-      return res.status(400).json({ message: "Invalid email" });
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password required",
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, patient.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+    const patient = await Patient.findOne({ email });
+
+    if (!patient) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    const match = await bcrypt.compare(password, patient.password);
+
+    if (!match) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
     }
 
     const token = jwt.sign(
@@ -57,15 +84,13 @@ exports.loginPatient = async (req, res) => {
     res.json({
       token,
       patient: {
-        id: patient._id,
         name: patient.name,
         email: patient.email,
+        mobile: patient.mobile,
       }
     });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
-
-

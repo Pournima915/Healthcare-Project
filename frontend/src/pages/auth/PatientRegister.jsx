@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "./PatientLogin.css";
 
 export default function PatientRegister() {
+
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
-    name: "",
+    name: "",        // ✅ FIXED
     email: "",
     password: "",
-    mobile: "",
+    mobile: "",      // ✅ FIXED
     gender: "",
     address: "",
   });
@@ -18,10 +19,13 @@ export default function PatientRegister() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+
+  /* ================= VALIDATION ================= */
   const validate = () => {
     let newErrors = {};
 
-    if (!form.name.trim()) newErrors.name = "Full Name is required";
+    if (!form.name.trim())
+      newErrors.name = "Full Name is required";
 
     if (!form.email) {
       newErrors.email = "Email is required";
@@ -36,60 +40,74 @@ export default function PatientRegister() {
     }
 
     if (!form.mobile) {
-      newErrors.mobile = "Mobile Number is required";
-    } else if (form.mobile.length < 10) {
-      newErrors.mobile = "Mobile number must be 10 digits";
+      newErrors.mobile = "Mobile Number required";
+    } else if (form.mobile.length !== 10) {
+      newErrors.mobile = "Mobile must be 10 digits";
     }
 
-    if (!form.gender) newErrors.gender = "Gender is required";
-    if (!form.address) newErrors.address = "Address is required";
+    if (!form.gender)
+      newErrors.gender = "Gender required";
+
+    if (!form.address)
+      newErrors.address = "Address required";
 
     return newErrors;
   };
 
+
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const validationErrors = validate();
-  setErrors(validationErrors);
+    const validationErrors = validate();
+    setErrors(validationErrors);
 
-  if (Object.keys(validationErrors).length !== 0) return;
-
-  try {
-    const response = await fetch(
-      "http://localhost:5000/api/doctor/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setErrors({ general: data.message || "Registration failed" });
+    if (Object.keys(validationErrors).length !== 0)
       return;
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/patient/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors({ general: data.message });
+        setLoading(false);
+        return;
+      }
+
+      alert("Patient registered successfully");
+      navigate("/patient/login");
+
+    } catch {
+      setErrors({ general: "Server error" });
     }
 
-    alert("Registration successful. Wait for admin approval.");
-    navigate("/doctor/login");
-  } catch (error) {
-    setErrors({ general: "Server error" });
-  }
-};
+    setLoading(false);
+  };
 
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
 
   return (
     <div className="login-bg">
       <form className="login-card" onSubmit={handleSubmit}>
         <h2 className="login-title">Patient Registration</h2>
 
+        {/* NAME */}
         <input
           name="name"
           placeholder="Full Name *"
@@ -99,6 +117,7 @@ export default function PatientRegister() {
         />
         {errors.name && <p className="error">{errors.name}</p>}
 
+        {/* EMAIL */}
         <input
           name="email"
           placeholder="Gmail *"
@@ -108,24 +127,25 @@ export default function PatientRegister() {
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
+        {/* PASSWORD */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
             name="password"
-            placeholder="Password * (min 6 characters)"
+            placeholder="Password *"
             className="login-input"
             value={form.password}
             onChange={handleChange}
-            style={{ paddingRight: "40px" }}
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
               right: "12px",
-              top: "50%",
+              top: "35%",
               transform: "translateY(-50%)",
               cursor: "pointer",
+              fontSize: "25px"
             }}
           >
             {showPassword ? "🙈" : "👁"}
@@ -133,6 +153,7 @@ export default function PatientRegister() {
         </div>
         {errors.password && <p className="error">{errors.password}</p>}
 
+        {/* MOBILE */}
         <input
           name="mobile"
           placeholder="Mobile *"
@@ -142,6 +163,7 @@ export default function PatientRegister() {
         />
         {errors.mobile && <p className="error">{errors.mobile}</p>}
 
+        {/* GENDER */}
         <select
           name="gender"
           className="login-input"
@@ -155,6 +177,7 @@ export default function PatientRegister() {
         </select>
         {errors.gender && <p className="error">{errors.gender}</p>}
 
+        {/* ADDRESS */}
         <input
           name="address"
           placeholder="Address *"

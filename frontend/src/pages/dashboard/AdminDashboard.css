@@ -1,124 +1,191 @@
-.admin-dashboard {
+.dashboard-container {
+  height: 100vh;
   display: flex;
-  min-height: 100vh;
-  background: #f4f6f8;
-  font-family: Arial, sans-serif;
-}
-
-/* Sidebar */
-.admin-sidebar {
-  width: 240px;
-  background: #1e3a8a;
-  color: white;
+  flex-direction: column;
+  background: linear-gradient(135deg, #e0f7fa, #fce4ec);
   padding: 20px;
 }
 
-.admin-sidebar h2 {
-  margin-bottom: 30px;
-}
-
-.admin-sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.admin-sidebar li {
-  padding: 12px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.admin-sidebar li:hover {
-  background: #2563eb;
-}
-
-.logout {
-  background: #dc2626;
-}
-
-/* Main */
-.admin-main {
-  flex: 1;
-  padding: 30px;
-}
-
-table {
-  width: 100%;
-  background: white;
-  border-radius: 10px;
-  border-collapse: collapse;
-  overflow: hidden;
-}
-
-th,
-td {
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-th {
-  background: #f1f5f9;
-  text-align: left;
-}
-
-/* Badges */
-.badge {
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 13px;
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
   color: white;
 }
 
-.badge.pending {
-  background: #f59e0b;
+.left-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-toggle {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.right-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* Body */
+.body-container {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: linear-gradient(180deg, #43cea2, #185a9d);
+  color: white;
+  transition: 0.4s ease;
+  overflow: hidden;
+}
+
+.sidebar.closed {
+  width: 60px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+}
+
+.sidebar li {
+  padding: 14px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar li.active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar.closed span {
+  display: none;
+}
+
+/* Main */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-x: auto;
+}
+
+/* Tables */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table th,
+table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+}
+
+tr:hover {
+  background: #f5f5f5;
+}
+
+table th {
+  background: #4facfe;
+  color: white;
+}
+
+table tr:hover {
+  background: #f0f9ff;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.8rem;
+  text-transform: capitalize;
 }
 
 .badge.approved {
   background: #16a34a;
 }
 
-.badge.rejected {
-  background: #dc2626;
-}
+.badge.pending { background: orange; }
 
-/* Buttons */
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #2563eb;
-  color: white;
-  margin-right: 5px;
-}
-
-button.reject {
-  background: #dc2626;
-}
-.view-btn,
-.download-btn {
-  margin-right: 6px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
-
-.view-btn {
-  background: #2563eb;
-  color: white;
-}
-
-.download-btn {
+.badge.active {
   background: #16a34a;
+}
+
+.badge.rescheduled { background: blue; }
+
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  margin-right: 5px;
+  cursor: pointer;
+  background: #2563eb;
   color: white;
 }
-.delete {
-  background: #b91c1c;
+
+button.danger {
+  background: #ef4444;
+}
+
+.controls {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+thead {
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
   color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: white;
+}
+
+.pagination button {
+  margin: 5px;
+  padding: 5px 10px;
 }

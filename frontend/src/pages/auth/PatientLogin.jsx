@@ -11,28 +11,18 @@ export default function PatientLogin() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ✅ Validation
   const validate = () => {
     let newErrors = {};
-
-    if (!email.trim()) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!password) {
-      newErrors.password = "Password is required";
-    }
-
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
     return newErrors;
   };
 
-  // ✅ Backend Login
   const handleLogin = async (e) => {
     e.preventDefault();
 
     const validationErrors = validate();
     setErrors(validationErrors);
-
     if (Object.keys(validationErrors).length !== 0) return;
 
     try {
@@ -43,9 +33,7 @@ export default function PatientLogin() {
         "http://localhost:5000/api/patient/login",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: email.toLowerCase().trim(),
             password,
@@ -53,24 +41,18 @@ export default function PatientLogin() {
         }
       );
 
-      const text = await response.text();
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        throw new Error("Server returned invalid JSON");
-      }
+      const data = await response.json();
 
       if (!response.ok) {
         setErrors({ general: data.message || "Login failed" });
         return;
       }
 
-      // ✅ Save token and user data
-      localStorage.setItem("patientToken", data.token);
+      // ✅ FIXED STORAGE (IMPORTANT)
       localStorage.setItem("patientAuth", JSON.stringify(data.patient));
+      localStorage.setItem("token", data.token);
 
+      alert("✅ Login Successful");
       navigate("/patient/dashboard");
 
     } catch (error) {
@@ -86,7 +68,6 @@ export default function PatientLogin() {
       <form className="login-card" onSubmit={handleLogin}>
         <h2 className="login-title">Patient Login</h2>
 
-        {/* Email */}
         <input
           type="email"
           placeholder="Email *"
@@ -96,7 +77,6 @@ export default function PatientLogin() {
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
-        {/* Password */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -104,24 +84,22 @@ export default function PatientLogin() {
             className="login-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={{ paddingRight: "40px" }}
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
             style={{
               position: "absolute",
               right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
+              top: "35%",
               cursor: "pointer",
+              fontSize: "22px",
             }}
           >
             {showPassword ? "🙈" : "👁"}
           </span>
         </div>
-        {errors.password && <p className="error">{errors.password}</p>}
 
-        {/* General Error */}
+        {errors.password && <p className="error">{errors.password}</p>}
         {errors.general && <p className="error">{errors.general}</p>}
 
         <button className="login-btn" disabled={loading}>

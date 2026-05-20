@@ -1,41 +1,42 @@
-const mongoose = require("mongoose");
+ const mongoose = require("mongoose");
 
-const doctorSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
+const doctorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true,unique: true, },
+  password: { type: String, required: true },
+  mobile: Number,
+  gender: String,
+  hospital: String,
+  experience: { type: Number, default: 1 },
+  qualification: String,
+  specialization: String,
+  licenseNo: String,
+  state: String,
+  district: String,
+  area: String,
+  certificate: String,
 
-    email: { type: String, required: true, unique: true },
+  fee: { type: Number, default: 200 },
+  rating: { type: Number, default: 4.5 },
+  location: { type: String, default: "Pune" },
+  profileImage: String,
 
-    password: { type: String, required: true },
-
-    mobile: { type: String, required: true },
-
-    gender: { type: String, required: true },
-
-    hospital: { type: String, required: true },
-
-    experience: { type: Number, required: true },
-
-    qualification: { type: String, required: true },
-
-    specialization: { type: String, required: true },
-
-    licenseNo: { type: String, required: true },
-
-    certificate: { type: String }, // file path (optional)
-
-    role: {
-      type: String,
-      default: "doctor",
-    },
-
-    status: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
-    },
+  role: {
+    type: String,
+    default: "doctor",
   },
-  { timestamps: true }
-);
+
+  status: {
+    type: String,
+    enum: ["waiting", "approved","rescheduled"],   
+    default: "waiting",              
+  },
+
+ profileImage: String,
+  online: { type: Boolean, default: false },
+
+  otp: String,
+  otpExpiry: Date,
+}, { timestamps: true });
 
 module.exports = mongoose.model("Doctor", doctorSchema);

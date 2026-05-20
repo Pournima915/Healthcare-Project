@@ -2,32 +2,29 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  background: #0f172a;
   color: white;
 }
 
 .video-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 15px 25px;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(10px);
+  background: #1e293b;
 }
 
 .call-info {
   display: flex;
+  gap: 15px;
   align-items: center;
-  gap: 20px;
 }
 
 .call-info button {
-  background: #ef4444;
-  border: none;
+  background: red;
   padding: 8px 16px;
   border-radius: 20px;
+  border: none;
   color: white;
-  cursor: pointer;
 }
 
 .video-container {
@@ -37,12 +34,22 @@
 .loader {
   text-align: center;
   padding: 10px;
-  font-weight: bold;
-  animation: pulse 1.2s infinite;
 }
 
-@keyframes pulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
+.loader button {
+  margin: 5px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.loader button:first-child {
+  background: green;
+  color: white;
+}
+
+.loader button:last-child {
+  background: red;
+  color: white;
 }

@@ -1,34 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./PatientLogin.css";
+import "./PatientLogin.css"; // reuse same CSS
 
-const DoctorLogin = () => {
+export default function DoctorLogin() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
+  // ✅ Validation
   const validate = () => {
     let newErrors = {};
 
-    if (!email) {
+    if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
-      newErrors.email = "Enter valid Gmail address";
     }
 
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
     }
 
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Backend Login
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     const validationErrors = validate();
@@ -36,50 +35,77 @@ const DoctorLogin = () => {
 
     if (Object.keys(validationErrors).length !== 0) return;
 
-    const doctors = JSON.parse(localStorage.getItem("doctors")) || [];
+    try {
+      setLoading(true);
+      setErrors({});
 
-    if (!Array.isArray(doctors)) {
-      setErrors({ general: "Doctor data corrupted" });
-      return;
+      const response = await fetch(
+        "http://localhost:5000/api/doctor/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email.toLowerCase().trim(),
+            password,
+          }),
+        }
+      );
+
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error("Server returned invalid JSON");
+      }
+
+      if (!response.ok) {
+        setErrors({ general: data.message || "Login failed" });
+        return;
+      }
+
+      // ✅ Save token & doctor data
+localStorage.setItem("token", data.token);
+
+// ✅ FIX: store _id correctly
+const doctorData = {
+  _id: data.doctor._id,   
+  name: data.doctor.name,
+  email: data.doctor.email,
+  status: data.doctor.status,
+};
+
+localStorage.setItem("doctorAuth", JSON.stringify(doctorData));
+
+navigate("/doctor/dashboard");
+
+    } catch (error) {
+      console.error("Doctor Login Error:", error);
+      setErrors({ general: "Server not running or connection error" });
+    } finally {
+      setLoading(false);
     }
-
-    const doctor = doctors.find(
-      (d) =>
-        d.email.toLowerCase() === email.toLowerCase() &&
-        d.password === password
-    );
-
-    if (!doctor) {
-      setErrors({ general: "Invalid email or password" });
-      return;
-    }
-
-    if (doctor.status !== "approved") {
-      setErrors({ general: "Account not approved by admin yet" });
-      return;
-    }
-
-    // ✅ VERY IMPORTANT
-    localStorage.setItem("doctorAuth", JSON.stringify(doctor));
-    localStorage.setItem("doctorToken", "true"); // <-- required for ProtectedRoute
-
-    navigate("/doctor/dashboard");
   };
 
   return (
     <div className="login-bg">
-      <form className="login-card" onSubmit={handleSubmit}>
+      <form className="login-card" onSubmit={handleLogin}>
         <h2 className="login-title">Doctor Login</h2>
 
+        {/* Email */}
         <input
-          type="text"
-          placeholder="Gmail *"
+          type="email"
+          placeholder="Email *"
           className="login-input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
+        {/* Password */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -94,20 +120,22 @@ const DoctorLogin = () => {
             style={{
               position: "absolute",
               right: "12px",
-              top: "50%",
+              top: "35%",
               transform: "translateY(-50%)",
               cursor: "pointer",
+              fontSize: "25px"
             }}
           >
             {showPassword ? "🙈" : "👁"}
           </span>
         </div>
-
         {errors.password && <p className="error">{errors.password}</p>}
+
+        {/* General Error */}
         {errors.general && <p className="error">{errors.general}</p>}
 
-        <button type="submit" className="login-btn">
-          Login
+        <button className="login-btn" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="login-footer">
@@ -122,6 +150,4 @@ const DoctorLogin = () => {
       </form>
     </div>
   );
-};
-
-export default DoctorLogin;
+}

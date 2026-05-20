@@ -1,45 +1,139 @@
-.ba-container {
-  min-height: 100vh;
+.premium-container { 
+  padding: 20px;
+}
+
+.location-search {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+/* SPECIALIST HORIZONTAL */
+.specialist-grid {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg,#e0f2fe,#f8fafc);
-}
-
-.ba-card {
-  background: white;
-  padding: 30px;
-  width: 420px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-  animation: slideUp 0.6s ease;
-}
-
-.ba-card h2 {
+  overflow-x: auto;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.ba-card input,
-.ba-card select,
-.ba-card textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+.specialist-card {
+  padding: 10px 18px;
+  border-radius: 20px;
+  background: #eee;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.3s;
 }
 
-.ba-card button {
-  width: 100%;
-  padding: 12px;
-  background: #2563eb;
+.specialist-card:hover {
+  background: #d0e6ff;
+}
+
+.specialist-card.active {
+  background: #007bff;
+  color: white;
+}
+
+/* DOCTOR CARDS */
+.doctor-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.doctor-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.doctor-card:hover {
+  background: #f9f9f9;
+}
+
+.doctor-card.active {
+  border: 2px solid #007bff;
+}
+
+.doctor-top {
+  display: flex;
+  gap: 10px;
+}
+
+.doctor-top img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.online-badge {
+  color: green;
+}
+
+/* SLOT GRID */
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* DEFAULT SLOT = AVAILABLE (GREEN) */
+.slot-btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #28a745; /* ✅ GREEN */
+  color: white;
+  transition: 0.3s;
+}
+
+/* HOVER */
+.slot-btn:hover {
+  opacity: 0.85;
+}
+
+/* SELECTED SLOT (BLUE) */
+.slot-btn.selected {
+  background: #007bff !important;
+  color: white;
+}
+
+/* BOOKED SLOT (RED) */
+.slot-btn.booked {
+  background: #ff4d4d;
+  color: white;
+  cursor: not-allowed;
+}
+
+/* BLOCKED SLOT (RED SAME AS BOOKED) */
+.slot-btn.blocked {
+  background: #ff4d4d;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* PAST SLOT (DARK GRAY) */
+.slot-btn.past {
+  background: #6c757d;
+  color: white;
+  cursor: not-allowed;
+}
+
+/* BOOK BUTTON */
+.book-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: green;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.book-btn:hover {
+  background: #218838;
 }

@@ -31,4 +31,37 @@ app.use("/api/auth", authRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 
+
+<div className="cards-grid">
+
+  <div className="card pending">
+    <h3>🕒 {stats.pending}</h3>
+    <p>Pending</p>
+  </div>
+
+  <div className="card accepted">
+    <h3>✅ {stats.accepted}</h3>
+    <p>Accepted</p>
+  </div>
+
+  <div className="card rescheduled">
+    <h3>🔁 {stats.rescheduled}</h3>
+    <p>Rescheduled</p>
+  </div>
+
+</div>
+
+useEffect(() => {
+  const doc = localStorage.getItem("doctorAuth");
+  if (doc) setDoctor(JSON.parse(doc));
+}, []);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    loadAppointments(doctor.email);
+  }, 10000); // every 10 sec
+
+  return () => clearInterval(interval);
+}, [doctor]);
+
 module.exports = app;

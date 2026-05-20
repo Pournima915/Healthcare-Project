@@ -1,17 +1,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+import "./i18n";
 /* Home */
 import Home from "./pages/Home";
-import Dashboard from "./pages/dashboard/Dashboard";
 
 /* Auth */
 import PatientLogin from "./pages/auth/PatientLogin";
 import PatientRegister from "./pages/auth/PatientRegister";
-
 import DoctorLogin from "./pages/auth/DoctorLogin";
 import DoctorRegister from "./pages/auth/DoctorRegister";
-
 import AdminLogin from "./pages/auth/AdminLogin";
 
 /* Dashboards */
@@ -22,32 +19,31 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 /* Patient */
 import BookAppointment from "./pages/patient/BookAppointment";
 
-/* Video Consultation */
+/* Video */
 import PatientVideoCall from "./pages/video/PatientVideoCall";
 import DoctorVideoCall from "./pages/video/DoctorVideoCall";
 
+/* Protection */
+import ProtectedRoute from "./routes/ProtectedRoute";
 
-/* Route Protection */
- import ProtectedRoute from "./routes/ProtectedRoute";
- 
+/* Reschedule */
+import ReschedulePage from "./pages/ReschedulePage";
+
+import VoiceCall from "./pages/call/VoiceCall";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* HOME */}
-  
-<Route path="*" element={<Navigate to="/" />} />
 
-   <Route path="/dashboard" element={
-  <ProtectedRoute>  <Dashboard />  </ProtectedRoute> } />
-  
+        {/* HOME */}
+        <Route path="/" element={<Home />} />
+
         {/* AUTH */}
         <Route path="/patient/login" element={<PatientLogin />} />
         <Route path="/patient/register" element={<PatientRegister />} />
-
         <Route path="/doctor/login" element={<DoctorLogin />} />
         <Route path="/doctor/register" element={<DoctorRegister />} />
-
         <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* PATIENT */}
@@ -69,23 +65,45 @@ function App() {
           }
         />
 
-        <Route       path="/patient/video-call"
+        <Route
+          path="/patient/reschedule/:id"
           element={
-            <ProtectedRoute role="patient"> <PatientVideoCall />  </ProtectedRoute>
+            <ProtectedRoute role="patient">
+              <ReschedulePage />
+            </ProtectedRoute>
           }
         />
+
+        
+
+       <Route path="/patient/video-call/:id" element={
+  <ProtectedRoute role="patient">
+    <PatientVideoCall />
+  </ProtectedRoute>
+} />
+
+<Route path="/doctor/video-call/:id" element={
+  <ProtectedRoute role="doctor">
+    <DoctorVideoCall />
+  </ProtectedRoute>
+} />
+
+
+<Route path="/voice-call/:roomId" element={<VoiceCall />} />
+
 
         {/* DOCTOR */}
-        
-        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
-
-
-        <Route        path="/doctor/video-call"
+        <Route
+          path="/doctor/dashboard"
           element={
-            <ProtectedRoute role="doctor">      <DoctorVideoCall />    </ProtectedRoute>
+            <ProtectedRoute role="doctor">
+              <DoctorDashboard />
+            </ProtectedRoute>
           }
         />
+
        
+
         {/* ADMIN */}
         <Route
           path="/admin/dashboard"
@@ -96,19 +114,9 @@ function App() {
           }
         />
 
-       
-
-<Route
-  path="/doctor/dashboard"
-  element={
-    <ProtectedRoute role="doctor">
-      <DoctorDashboard />
-    </ProtectedRoute>
-  }
-/>
-
         {/* FALLBACK */}
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  FaUserCircle,
+  FaSignOutAlt,
+  FaBars,
+  FaUserMd,
+  FaUsers,
+  FaCalendarCheck,
+} from "react-icons/fa";
+
+import socket from "../../socket";
 import "./AdminDashboard.css";
 
 const API = "http://localhost:5000/api/admin";
@@ -7,24 +17,28 @@ const API = "http://localhost:5000/api/admin";
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("doctors");
+
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  /* 🔐 Admin Auth Check */
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("All");
+
+  // ================= AUTH =================
   useEffect(() => {
     const admin = localStorage.getItem("adminAuth");
     if (!admin) navigate("/admin/login");
   }, [navigate]);
 
-  /* 🚀 Fetch Data From Backend */
+  // ================= FETCH =================
   useEffect(() => {
-    fetchAllData();
+    fetchData();
   }, []);
 
-  const fetchAllData = async () => {
+  const fetchData = async () => {
     try {
       const [docRes, patRes, appRes] = await Promise.all([
         fetch(`${API}/doctors`),
@@ -32,252 +46,246 @@ export default function AdminDashboard() {
         fetch(`${API}/appointments`),
       ]);
 
-      const docs = await docRes.json();
-      const pats = await patRes.json();
-      const apps = await appRes.json();
-
-      setDoctors(docs);
-      setPatients(pats);
-      setAppointments(apps);
+      setDoctors(await docRes.json());
+      setPatients(await patRes.json());
+      setAppointments(await appRes.json());
     } catch (err) {
-      console.error("Admin fetch error:", err);
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   };
 
-  /* ✅ Update Doctor Status */
+  // ================= SOCKET =================
+  useEffect(() => {
+    socket.on("new-appointment", (data) => {
+      setAppointments((prev) => [data, ...prev]);
+    });
+
+    return () => socket.off("new-appointment");
+  }, []);
+
+  // ================= UPDATE DOCTOR =================
   const updateDoctorStatus = async (id, status) => {
-    try {
-      const res = await fetch(`${API}/doctors/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
+    const res = await fetch(`${API}/doctors/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
 
-      const updated = await res.json();
-      setDoctors((prev) =>
-        prev.map((d) => (d._id === updated._id ? updated : d))
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    const updated = await res.json();
+    setDoctors((prev) =>
+      prev.map((d) => (d._id === updated._id ? updated : d))
+    );
   };
 
-  /* ✅ Update Patient Status */
-  const updatePatientStatus = async (id, status) => {
-    try {
-      const res = await fetch(`${API}/patients/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-
-      const updated = await res.json();
-      setPatients((prev) =>
-        prev.map((p) => (p._id === updated._id ? updated : p))
-      );
-    } catch (err) {
-      console.error(err);
-    }
+  // ================= LOGOUT =================
+  const logout = () => {
+    localStorage.removeItem("adminAuth");
+    navigate("/admin/login");
   };
 
-  /* ❌ Delete Doctor */
-  const deleteDoctor = async (id) => {
-    if (!window.confirm("Delete this doctor permanently?")) return;
-
-    try {
-      await fetch(`${API}/doctors/${id}`, { method: "DELETE" });
-      setDoctors((prev) => prev.filter((d) => d._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  if (loading) return <div className="admin-loading">Loading Dashboard...</div>;
+  // ================= FILTER APPOINTMENTS =================
+  const filteredAppointments = appointments
+    .filter((a) =>
+      a.patientName?.toLowerCase().includes(search.toLowerCase()) ||
+      a.doctorName?.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((a) =>
+      filterStatus === "All" ? true : a.status === filterStatus
+    )
+    .sort((a, b) => {
+      const A = new Date(`${a.date} ${a.startTime}`);
+      const B = new Date(`${b.date} ${b.startTime}`);
+      return B - A;
+    });
 
   return (
-    <div className="admin-dashboard">
-      {/* Sidebar */}
-      <aside className="admin-sidebar">
-        <h2 className="logo">TeleMed Admin</h2>
-        <ul>
-          <li
-            className={activeTab === "doctors" ? "active" : ""}
-            onClick={() => setActiveTab("doctors")}
-          >
-            👨‍⚕️ Doctors
-          </li>
-          <li
-            className={activeTab === "patients" ? "active" : ""}
-            onClick={() => setActiveTab("patients")}
-          >
-            🧑 Patients
-          </li>
-          <li
-            className={activeTab === "appointments" ? "active" : ""}
-            onClick={() => setActiveTab("appointments")}
-          >
-            📅 Appointments
-          </li>
-          <li
-            className="logout"
-            onClick={() => {
-              localStorage.removeItem("adminAuth");
-              navigate("/admin/login");
-            }}
-          >
-            🚪 Logout
-          </li>
-        </ul>
-      </aside>
+    <div className="dashboard-container">
 
-      {/* Main Content */}
-      <main className="admin-main">
-        {/* Doctors Tab */}
-        {activeTab === "doctors" && (
-          <>
-            <h2>Doctor Verification</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Specialization</th>
-                  <th>Experience</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {doctors.map((d) => (
-                  <tr key={d._id}>
-                    <td>{d.name}</td>
-                    <td>{d.email}</td>
-                    <td>{d.specialization}</td>
-                    <td>{d.experience} yrs</td>
-                    <td>
-                      <span className={`badge ${d.status}`}>
-                        {d.status}
-                      </span>
-                    </td>
-                    <td>
-                      {d.status !== "approved" && (
-                        <button
-                          onClick={() =>
-                            updateDoctorStatus(d._id, "approved")
-                          }
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {d.status !== "rejected" && (
-                        <button
-                          className="reject"
-                          onClick={() =>
-                            updateDoctorStatus(d._id, "rejected")
-                          }
-                        >
-                          Reject
-                        </button>
-                      )}
-                      <button
-                        className="delete"
-                        onClick={() => deleteDoctor(d._id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+      {/* ================= TOPBAR ================= */}
+      <header className="topbar">
+        <div className="left-top">
+          <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} />
+          <h2>🩺 TeleMed Admin</h2>
+        </div>
+
+        <div className="right-top">
+          <FaUserCircle />
+          <button onClick={logout}>
+            <FaSignOutAlt />
+          </button>
+        </div>
+      </header>
+
+      <div className="body-container">
+
+        {/* ================= SIDEBAR ================= */}
+        <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+          <ul>
+            <li
+              className={activeTab === "doctors" ? "active" : ""}
+              onClick={() => setActiveTab("doctors")}
+            >
+              <FaUserMd /> Doctors
+            </li>
+
+            <li
+              className={activeTab === "patients" ? "active" : ""}
+              onClick={() => setActiveTab("patients")}
+            >
+              <FaUsers /> Patients
+            </li>
+
+            <li
+              className={activeTab === "appointments" ? "active" : ""}
+              onClick={() => setActiveTab("appointments")}
+            >
+              <FaCalendarCheck /> Appointments
+            </li>
+          </ul>
+        </aside>
+
+        {/* ================= MAIN ================= */}
+        <main className="main-content">
+
+          {/* ================= DOCTORS TABLE ================= */}
+          {activeTab === "doctors" && (
+            <>
+              <h2>Doctors</h2>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Specialization</th>
+                    <th>Experience</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
+                </thead>
 
-        {/* Patients Tab */}
-        {activeTab === "patients" && (
-          <>
-            <h2>Patient Management</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Gender</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {patients.map((p) => (
-                  <tr key={p._id}>
-                    <td>{p.name}</td>
-                    <td>{p.email}</td>
-                    <td>{p.gender}</td>
-                    <td>
-                      <span className={`badge ${p.status || "active"}`}>
-                        {p.status || "active"}
-                      </span>
-                    </td>
-                    <td>
-                      {p.status !== "blocked" ? (
-                        <button
-                          className="reject"
-                          onClick={() =>
-                            updatePatientStatus(p._id, "blocked")
-                          }
-                        >
-                          Block
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            updatePatientStatus(p._id, "active")
-                          }
-                        >
-                          Unblock
-                        </button>
-                      )}
-                    </td>
+                <tbody>
+                  {doctors.map((d) => (
+                    <tr key={d._id}>
+                      <td>Dr. {d.name}</td>
+                      <td>{d.email}</td>
+                      <td>{d.specialization}</td>
+                      <td>{d.experience} yrs</td>
+
+                      <td>
+                        <span className={`badge ${d.status}`}>
+                          {d.status}
+                        </span>
+                      </td>
+
+                      <td>
+                        {d.status === "waiting" && (
+                          <button
+                            onClick={() =>
+                              updateDoctorStatus(d._id, "approved")
+                            }
+                          >
+                            Approve
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+
+          {/* ================= PATIENTS TABLE ================= */}
+          {activeTab === "patients" && (
+            <>
+              <h2>Patients</h2>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
+                </thead>
 
-        {/* Appointments Tab */}
-        {activeTab === "appointments" && (
-          <>
-            <h2>All Appointments</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Patient</th>
-                  <th>Doctor</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map((a) => (
-                  <tr key={a._id}>
-                    <td>{a.patientName}</td>
-                    <td>{a.doctorName}</td>
+                <tbody>
+                  {patients.map((p) => (
+                    <tr key={p._id}>
+                      <td>{p.name}</td>
+                      <td>{p.email}</td>
+                      <td>{p.gender}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+
+          {/* ================= APPOINTMENTS TABLE ================= */}
+          {activeTab === "appointments" && (
+            <>
+              <h2>Appointments</h2>
+
+              <div className="controls">
+                <input
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                >
+                  <option>All</option>
+                  <option>pending</option>
+                  <option>accepted</option>
+                  <option>rescheduled</option>
+                </select>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredAppointments.map((a) => (
+                    <tr key={a._id}>
+                      <td>{a.patientName}</td>
+                       <td>
+                      {a.doctorName
+                        ? `Dr. ${a.doctorName}`
+                        : a.doctorEmail?.split("@")[0] || "N/A"}
+                    </td>
                     <td>{a.date}</td>
                     <td>
-                      <span className={`badge ${a.status}`}>
-                        {a.status}
-                      </span>
+                      {a.startTime && a.endTime
+                        ? `${a.startTime} - ${a.endTime}`
+                        : "-"}
                     </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-      </main>
+                      <td>
+                        <span className={`badge ${a.status}`}>
+                          {a.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+
+        </main>
+      </div>
     </div>
   );
 }

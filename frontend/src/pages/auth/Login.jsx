@@ -3,6 +3,12 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+localStorage.setItem("doctorAuth", JSON.stringify(res.data));
+
+if (!localStorage.getItem("doctorAuth")) {
+  navigate("/doctor/login");
+}
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

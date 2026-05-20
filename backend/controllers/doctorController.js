@@ -2,11 +2,9 @@ const Doctor = require("../models/Doctor");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-/*
-===========================
-Register Doctor
-===========================
-*/
+// =============================
+// ✅ REGISTER DOCTOR
+// =============================
 exports.registerDoctor = async (req, res) => {
   try {
     const {
@@ -20,16 +18,28 @@ exports.registerDoctor = async (req, res) => {
       qualification,
       specialization,
       licenseNo,
+      state,
+      district,
+      area,
+      latitude,
+      longitude,
     } = req.body;
 
-    const existingDoctor = await Doctor.findOne({ email });
-    if (existingDoctor) {
-      return res.status(400).json({ message: "Doctor already exists" });
+    // check existing doctor
+    const existing = await Doctor.findOne({ email });
+    if (existing) {
+      return res.status(400).json({
+        message: "Doctor already exists",
+      });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // certificate upload
+    const certificate = req.file?.filename || "";
 
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // create doctor (default status = waiting)
     const doctor = await Doctor.create({
       name,
       email,
@@ -41,62 +51,79 @@ exports.registerDoctor = async (req, res) => {
       qualification,
       specialization,
       licenseNo,
-      role: "doctor",
-      status: "pending",
+      state,
+      district,
+      area,
+      latitude,
+      longitude,
+      certificate,
+      status: "waiting", // ✅ IMPORTANT
     });
 
     res.status(201).json({
-      message: "Doctor registered successfully",
+      message: "Registration successful. Waiting for admin approval",
       doctor,
     });
+
   } catch (err) {
+    console.log("REGISTER ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 };
 
-/*
-===========================
-Login Doctor
-===========================
-*/
+// =============================
+// LOGIN Doctor
+
+
 exports.loginDoctor = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    // ✅ FIX EMAIL NORMALIZATION
+    email = email.toLowerCase().trim();
+
+    console.log("LOGIN EMAIL:", email);
 
     const doctor = await Doctor.findOne({ email });
+
+    console.log("FOUND DOCTOR:", doctor);
+
     if (!doctor) {
-      return res.status(400).json({ message: "Doctor not found" });
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // ✅ FINAL FIX (THIS SOLVES YOUR ISSUE)
+    if (!doctor.status || doctor.status.toLowerCase().trim() !== "approved") {
+      return res.status(403).json({
+        message: "Your account is waiting for admin approval",
+      });
     }
 
     const isMatch = await bcrypt.compare(password, doctor.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
 
-    if (doctor.status !== "approved") {
-      return res.status(403).json({ message: "Doctor not approved yet" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
-      {
-        id: doctor._id,
-        role: doctor.role,
-      },
+      { id: doctor._id, role: doctor.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
     res.json({
+      message: "Login successful",
       token,
       doctor: {
-        id: doctor._id,
+        _id: doctor._id,   
         name: doctor.name,
         email: doctor.email,
-        role: doctor.role,
         status: doctor.status,
       },
     });
+
   } catch (err) {
+    console.log("LOGIN ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 };
