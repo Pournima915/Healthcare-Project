@@ -68,7 +68,7 @@ const sendFile = (e) => {
   reader.onload = () => {
     const msg = {
       id: Date.now(),
-      file: reader.result, // ✅ base64 file
+      file: reader.result, 
       sender: user.email,
       receiver: selectedUser.email,
       status: "sent",
@@ -82,7 +82,7 @@ const sendFile = (e) => {
 };
 
   return (
-    <div className="chat-container">
+    <div className="isolated-chat-system">
 
       {/* LEFT USERS LIST */}
       <div className="chat-users">
