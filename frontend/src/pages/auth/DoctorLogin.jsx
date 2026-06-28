@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./PatientLogin.css"; // reuse same CSS
+import "./PatientLogin.css"; 
 
 export default function DoctorLogin() {
   const navigate = useNavigate();
@@ -11,7 +11,6 @@ export default function DoctorLogin() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ✅ Validation
   const validate = () => {
     let newErrors = {};
 
@@ -26,7 +25,6 @@ export default function DoctorLogin() {
     return newErrors;
   };
 
-  // ✅ Backend Login
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -67,10 +65,9 @@ export default function DoctorLogin() {
         return;
       }
 
-      // ✅ Save token & doctor data
+      
 localStorage.setItem("token", data.token);
 
-// ✅ FIX: store _id correctly
 const doctorData = {
   _id: data.doctor._id,   
   name: data.doctor.name,
@@ -95,7 +92,6 @@ navigate("/doctor/dashboard");
       <form className="login-card" onSubmit={handleLogin}>
         <h2 className="login-title">Doctor Login</h2>
 
-        {/* Email */}
         <input
           type="email"
           placeholder="Email *"
@@ -105,7 +101,6 @@ navigate("/doctor/dashboard");
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
-        {/* Password */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -131,8 +126,7 @@ navigate("/doctor/dashboard");
         </div>
         {errors.password && <p className="error">{errors.password}</p>}
 
-        {/* General Error */}
-        {errors.general && <p className="error">{errors.general}</p>}
+       {errors.general && <p className="error">{errors.general}</p>}
 
         <button className="login-btn" disabled={loading}>
           {loading ? "Logging in..." : "Login"}

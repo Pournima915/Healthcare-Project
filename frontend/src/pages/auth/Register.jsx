@@ -42,7 +42,6 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          {/* Full Name */}
           <input
             type="text"
             name="fullName"
@@ -53,7 +52,6 @@ export default function Register() {
             required
           />
 
-          {/* Date of Birth */}
           <input
             type="date"
             name="dob"
@@ -63,7 +61,6 @@ export default function Register() {
             required
           />
 
-          {/* Gender */}
           <select
             name="gender"
             value={formData.gender}
@@ -77,7 +74,6 @@ export default function Register() {
             <option value="other">Other</option>
           </select>
 
-          {/* Address */}
           <input
             type="text"
             name="address"
@@ -88,7 +84,6 @@ export default function Register() {
             required
           />
 
-          {/* Phone Number */}
           <input
             type="tel"
             name="phone"
@@ -99,7 +94,6 @@ export default function Register() {
             required
           />
 
-          {/* Clinical Data */}
           <input
             type="text"
             name="allergies"
@@ -117,7 +111,6 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Password */}
           <input
             type="password"
             name="password"
@@ -128,7 +121,6 @@ export default function Register() {
             required
           />
 
-          {/* Role Selection */}
           <select
             name="role"
             value={formData.role}
@@ -140,7 +132,6 @@ export default function Register() {
             <option value="admin">Admin</option>
           </select>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-700 text-white font-semibold py-3 rounded-lg hover:bg-blue-800 transition duration-300"

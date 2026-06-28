@@ -9,7 +9,7 @@ export default function ChatBox({ user, usersList = [] }) {
   const [typing, setTyping] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  // ================= SOCKET =================
+  
   useEffect(() => {
   socket.on("receive-message", (msg) => {
     setMessages((prev) => [...prev, msg]);
@@ -33,8 +33,6 @@ export default function ChatBox({ user, usersList = [] }) {
 }, []);
 
 
-
-  // ================= SEND =================
   const send = () => {
   if (!message.trim() || !selectedUser) return;
 
@@ -58,7 +56,6 @@ export default function ChatBox({ user, usersList = [] }) {
 };
 
 
-// ================= FILE SEND =================
 const sendFile = (e) => {
   const file = e.target.files[0];
   if (!file || !selectedUser) return;
@@ -84,7 +81,7 @@ const sendFile = (e) => {
   return (
     <div className="isolated-chat-system">
 
-      {/* LEFT USERS LIST */}
+    
       <div className="chat-users">
         {usersList.map((u, i) => (
           <div
@@ -107,11 +104,10 @@ const sendFile = (e) => {
         ))}
       </div>
 
-      {/* RIGHT CHAT */}
       <div className="chat-box">
         {selectedUser ? (
           <>
-            {/* HEADER */}
+           
             <div className="chat-header">
               <h4>{selectedUser.name}</h4>
 
@@ -122,7 +118,7 @@ const sendFile = (e) => {
               )}
             </div>
 
-            {/* MESSAGES */}
+           
             <div className="messages">
               {messages
                 .filter(
@@ -148,7 +144,6 @@ const sendFile = (e) => {
 
             {typing && <p className="typing">Typing...</p>}
 
-            {/* INPUT */}
             <div className="input">
   <input
     value={message}
@@ -156,7 +151,6 @@ const sendFile = (e) => {
     placeholder="Type a message"
   />
 
-  {/* ✅ ADD THIS */}
   <input type="file" onChange={sendFile} />
 
   <button onClick={send}>Send</button>

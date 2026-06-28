@@ -45,20 +45,17 @@ export default function PatientDashboard() {
 
   const notifRef = useRef(null);
 
-  // ================= LOAD DOCTORS =================
   useEffect(() => {
     axios.get("http://localhost:5000/api/doctor/all")
       .then(res => setDoctors(res.data))
       .catch(err => console.log(err));
   }, []);
 
-  // ================= LOAD USER =================
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("patientAuth"));
     if (data) setPatient(data);
   }, []);
 
-  // ================= LOAD NOTIFICATIONS (NEW) =================
   const loadNotifications = async () => {
     if (!patient) return;
 
@@ -75,7 +72,6 @@ export default function PatientDashboard() {
     }
   };
 
-  // ================= LOAD STATS =================
   const loadStats = async () => {
     if (!patient) return;
 
@@ -89,25 +85,22 @@ export default function PatientDashboard() {
     }
   };
 
-  // ================= LANGUAGE =================
   const changeLang = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("lang", lng);
   };
 
-  // ================= LOGOUT =================
   const logout = () => {
     socket.emit("patient-offline", patient.email);
     localStorage.clear();
     navigate("/patient/login");
   };
 
-  // ================= SOCKET =================
   useEffect(() => {
     if (!patient) return;
 
     loadStats();
-    loadNotifications(); // 🔥 IMPORTANT
+    loadNotifications(); 
 
     socket.emit("patient-online", patient.email);
     socket.emit("get-online-doctors");
@@ -115,7 +108,7 @@ export default function PatientDashboard() {
     socket.on("notification", (msg) => {
       setNotifications((prev) => [msg, ...prev]);
       loadStats();
-      loadNotifications(); // refresh appointments
+      loadNotifications(); 
     });
 
     socket.emit("join-room", patient.email);
@@ -131,7 +124,6 @@ export default function PatientDashboard() {
 
   }, [patient]);
 
-  // ================= CLOSE DROPDOWN ON CLICK OUTSIDE =================
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -142,7 +134,6 @@ export default function PatientDashboard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // ================= CALL =================
   const startCall = async (doctorEmail, type) => {
     const appointmentId = Date.now();
 
@@ -186,7 +177,6 @@ export default function PatientDashboard() {
   return (
     <div className="dashboard-container">
 
-      {/* TOPBAR */}
       <header className="topbar">
         <div className="left-top">
           <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} />
@@ -195,7 +185,6 @@ export default function PatientDashboard() {
 
         <div className="right-top" ref={notifRef}>
 
-          {/* 🔔 NOTIFICATION ICON */}
           <div
             className="notification-icon"
             onClick={() => setShowNotifications(!showNotifications)}
@@ -209,7 +198,6 @@ export default function PatientDashboard() {
             )}
           </div>
 
-          {/* 🔽 DROPDOWN */}
 {showNotifications && (
   <div className="notification-dropdown">
 
@@ -265,7 +253,6 @@ export default function PatientDashboard() {
 
       <div className="body-container">
 
-        {/* SIDEBAR */}
         <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
           <ul>
             <li onClick={() => setActiveTab("dashboard")}>
@@ -290,7 +277,6 @@ export default function PatientDashboard() {
           </ul>
         </aside>
 
-        {/* MAIN */}
         <main className="main-content">
 
           {activeTab === "dashboard" && (
@@ -329,8 +315,7 @@ export default function PatientDashboard() {
                   </div>
                 ))
               )}
-              {/* 🔔 APPOINTMENT NOTIFICATIONS */}
-<h3>📅 Upcoming Appointments</h3>
+              <h3>📅 Upcoming Appointments</h3>
 
 {todayAppointments.length === 0 && tomorrowAppointments.length === 0 ? (
   <p>No upcoming appointments</p>

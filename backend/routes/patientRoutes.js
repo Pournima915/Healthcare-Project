@@ -17,11 +17,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// UPDATE PROFILE
 router.put("/update-profile", async (req, res) => {
   try {
-    const userId = req.user.id; // from JWT middleware
-
+    const userId = req.user.id; 
     const updated = await Patient.findByIdAndUpdate(
       userId,
       req.body,
@@ -35,7 +33,6 @@ router.put("/update-profile", async (req, res) => {
 });
 
 
-/* ================= LOGIN ================= */
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -57,7 +54,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-        // ❗ BLOCK LOGIN IF BLOCKED
     if (patient.status === "blocked") {
       return res.status(403).json({
         message: "Your account is blocked by admin"
@@ -98,8 +94,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
-/* ================= REGISTER ================= */
 router.post("/register", async (req, res) => {
   try {
     const { name, email, mobile, password, gender, address } = req.body;

@@ -2,7 +2,6 @@ const Doctor = require("../models/Doctor");
 const Patient = require("../models/Patient");
 const Appointment = require("../models/Appointment");
 
-/* ✅ Get All Doctors */
 exports.getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find().sort({ createdAt: -1 });
@@ -13,7 +12,6 @@ exports.getAllDoctors = async (req, res) => {
   }
 };
 
-/* ✅ Update Doctor Status */
 exports.updateDoctorStatus = async (req, res) => {
   try {
     const doctor = await Doctor.findByIdAndUpdate(
@@ -28,7 +26,6 @@ exports.updateDoctorStatus = async (req, res) => {
   }
 };
 
-/* ❌ Delete Doctor */
 exports.deleteDoctor = async (req, res) => {
   try {
     await Doctor.findByIdAndDelete(req.params.id);
@@ -39,7 +36,6 @@ exports.deleteDoctor = async (req, res) => {
   }
 };
 
-/* ✅ Get All Patients */
 exports.getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find().sort({ createdAt: -1 });
@@ -50,7 +46,6 @@ exports.getAllPatients = async (req, res) => {
   }
 };
 
-/* ✅ Update Patient Status */
 exports.updatePatientStatus = async (req, res) => {
   try {
     const patient = await Patient.findByIdAndUpdate(
@@ -65,7 +60,6 @@ exports.updatePatientStatus = async (req, res) => {
   }
 };
 
-/* ✅ Get All Appointments (FIXED) */
 exports.getAllAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find()

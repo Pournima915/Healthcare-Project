@@ -5,13 +5,11 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+
 app.use(express.json());
 
-// Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 
-// Test route (VERY IMPORTANT)
 app.get("/", (req, res) => {
   res.send("Telemedicine API is running");
 });

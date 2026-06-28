@@ -48,9 +48,7 @@ const patientSchema = new mongoose.Schema(
 { timestamps: true }
 );
 
-/* =========================
-   AUTO GENERATE patientId
-========================= */
+
 patientSchema.pre("save", async function(next) {
 
   if (this.patientId) return next();

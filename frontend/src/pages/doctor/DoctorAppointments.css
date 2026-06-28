@@ -1,22 +1,19 @@
-/* Container */
+
 .doctor-container {
   padding: 20px;
   background: #f5f7fb;
   min-height: 100vh;
 }
 
-/* Title */
 .doctor-container h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-/* Table Wrapper */
 .table-wrapper {
   overflow-x: auto;
 }
 
-/* Table */
 .appointment-table {
   width: 100%;
   border-collapse: collapse;
@@ -26,7 +23,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Header */
 .appointment-table thead {
   background: #4a6cf7;
   color: white;
@@ -37,26 +33,22 @@
   text-align: center;
 }
 
-/* Rows */
 .appointment-table td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #eee;
 }
 
-/* Hover */
 .appointment-table tbody tr:hover {
   background: #f9f9f9;
 }
 
-/* No data */
 .no-data {
   text-align: center;
   padding: 20px;
   font-weight: bold;
 }
 
-/* Status */
 .status {
   padding: 6px 12px;
   border-radius: 20px;
@@ -85,7 +77,6 @@
   color: #383d41;
 }
 
-/* Buttons */
 .btn {
   padding: 6px 10px;
   margin: 2px;
@@ -115,7 +106,6 @@
   color: white;
 }
 
-/* Reschedule box */
 .reschedule-box {
   margin-top: 8px;
   display: flex;

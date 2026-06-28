@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Availability = require("../models/Availability");
 
-// ================= SAVE AVAILABILITY =================
 router.post("/", async (req, res) => {
   try {
     const { doctorEmail, date, slots } = req.body;
@@ -11,7 +10,6 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    // Remove old data for same date
     await Availability.findOneAndDelete({ doctorEmail, date });
 
     const newData = new Availability({
@@ -30,7 +28,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ================= GET AVAILABILITY =================
 router.get("/:doctorEmail/:date", async (req, res) => {
   try {
     const { doctorEmail, date } = req.params;

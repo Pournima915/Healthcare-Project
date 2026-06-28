@@ -9,7 +9,7 @@ export default function DoctorVideoCall() {
   const [api, setApi] = useState(null);
 
   useEffect(() => {
-    // Load Jitsi API
+    
     if (!window.JitsiMeetExternalAPI) {
       alert("Jitsi Meet API not loaded!");
       return;
@@ -28,10 +28,8 @@ export default function DoctorVideoCall() {
     const jitsi = new window.JitsiMeetExternalAPI(domain, options);
     setApi(jitsi);
 
-    // Notify patient that doctor is in the room
     socket.emit("doctor-in-room", { appointmentId });
 
-    // Listen for hangup
     jitsi.addEventListener("readyToClose", () => {
       jitsi.dispose();
       navigate("/doctor/dashboard");
@@ -42,7 +40,7 @@ export default function DoctorVideoCall() {
     };
   }, [appointmentId, navigate]);
 
-  // Handle patient hangup
+ 
   useEffect(() => {
     socket.on("end-call", (data) => {
       if (data.appointmentId === appointmentId) {

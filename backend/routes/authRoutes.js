@@ -10,9 +10,6 @@ const { login } = require("../controllers/authController");
 router.post("/login", login);
 
 
-
-
-// ================= SEND OTP =================
 router.post("/send-otp", async (req, res) => {
   const { email, role } = req.body;
 
@@ -33,7 +30,6 @@ router.post("/send-otp", async (req, res) => {
   res.json({ message: "OTP sent" });
 });
 
-// ================= VERIFY OTP =================
 router.post("/verify-otp", async (req, res) => {
   const { email, otp, role } = req.body;
 
@@ -48,7 +44,6 @@ router.post("/verify-otp", async (req, res) => {
   res.json({ message: "OTP verified" });
 });
 
-// ================= RESET PASSWORD =================
 router.post("/reset-password", async (req, res) => {
   const { email, password, role } = req.body;
 

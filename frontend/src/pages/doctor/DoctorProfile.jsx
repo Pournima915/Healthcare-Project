@@ -16,7 +16,6 @@ export default function DoctorProfile() {
     profileImage: null,
   });
 
-  // ================= LOAD DATA =================
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("doctorAuth"));
 
@@ -36,7 +35,6 @@ export default function DoctorProfile() {
     }
   }, []);
 
-  // ================= HANDLE CHANGE =================
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -45,7 +43,6 @@ export default function DoctorProfile() {
     setForm({ ...form, profileImage: e.target.files[0] });
   };
 
-  // ================= UPDATE =================
   const updateProfile = async () => {
     try {
       const formData = new FormData();
@@ -64,7 +61,6 @@ export default function DoctorProfile() {
         }
       );
 
-      // ✅ Update localStorage instantly
       localStorage.setItem("doctorAuth", JSON.stringify(res.data));
 
       setDoctor(res.data);
@@ -79,7 +75,6 @@ export default function DoctorProfile() {
 
   if (!doctor) return null;
 
-  // ================= IMAGE =================
   const getImage = () => {
     return doctor.profileImage
       ? `http://localhost:5000/${doctor.profileImage}?t=${Date.now()}`

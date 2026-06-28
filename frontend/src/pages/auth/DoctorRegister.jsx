@@ -29,7 +29,6 @@ const DoctorRegister = () => {
   const fileInput = useRef(null);
   const [errors, setErrors] = useState({});
 
-  // ✅ SPECIALIZATION OPTIONS
   const specializations = [
     "Dentist",
     "Cardiologist",
@@ -42,7 +41,6 @@ const DoctorRegister = () => {
     "Other",
   ];
 
-  // ✅ STATES + DISTRICTS (example)
   const statesData = {
     Maharashtra: ["Ahilyanagar (Ahmednagar)","Akola","Amravati","Beed","Bhandara","Buldhana","Chandrapur","Chhatrapati Sambhajinagar (Aurangabad)","Dharashiv (Osmanabad)","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai City","Mumbai Suburban","Nagpur","Nanded","Nandurbar","Nashik","Palghar","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurg","Solapur","Thane","Wardha","Washim","Yavatmal"],
     Gujarat: ["Ahmedabad","Amreli","Anand","Aravalli","Banaskantha","Bharuch","Bhavnagar","Botad","Chhota Udaipur","Dahod","Dang","Devbhoomi Dwarka","Gandhinagar","Gir Somnath","Jamnagar","Junagadh","Kachchh (Kutch)","Kheda","Mahisagar","Mehsana","Morbi","Narmada","Navsari",  "Panchmahal","Patan","Porbandar","Rajkot","Sabarkantha","Surat","Surendranagar","Tapi","Vadodara","Valsad"],
@@ -52,9 +50,6 @@ const DoctorRegister = () => {
   ]
   };
 
-  // =============================
-  // AUTO LOCATION
-  // =============================
   const getCurrentLocation = () => {
   if (!navigator.geolocation) {
     alert("Geolocation not supported");
@@ -72,9 +67,8 @@ const DoctorRegister = () => {
 
       const data = await res.json();
 
-      console.log("FULL LOCATION DATA:", data); // 🔍 debug
+      console.log("FULL LOCATION DATA:", data);
 
-      // ✅ FIX: handle multiple possible fields
       const state =
         data.address.state ||
         data.address.region ||
@@ -111,9 +105,6 @@ const DoctorRegister = () => {
   });
 };
 
-  // =============================
-  // VALIDATION
-  // =============================
   const validate = () => {
     let newErrors = {};
 
@@ -156,9 +147,6 @@ const DoctorRegister = () => {
     return newErrors;
   };
 
-  // =============================
-  // SUBMIT
-  // =============================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -205,9 +193,6 @@ const DoctorRegister = () => {
     }
   };
 
-  // =============================
-  // HANDLE CHANGE
-  // =============================
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -235,7 +220,6 @@ const DoctorRegister = () => {
           onChange={handleChange}
         />
 
-        {/* PASSWORD */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -272,7 +256,6 @@ const DoctorRegister = () => {
           onChange={handleChange}
         />
 
-        {/* EXPERIENCE FIX */}
         <input
           type="number"
           name="experience"
@@ -288,7 +271,6 @@ const DoctorRegister = () => {
           onChange={handleChange}
         />
 
-        {/* SPECIALIZATION */}
         <select
           name="specialization"
           className="login-input"
@@ -316,7 +298,6 @@ const DoctorRegister = () => {
           onChange={handleChange}
         />
 
-        {/* STATE */}
         <select
           name="state"
           className="login-input"
@@ -329,7 +310,6 @@ const DoctorRegister = () => {
           ))}
         </select>
 
-        {/* DISTRICT */}
         <select
           name="district"
           className="login-input"
@@ -342,7 +322,6 @@ const DoctorRegister = () => {
           ))}
         </select>
 
-        {/* AREA */}
         <input
           name="area"
           placeholder="Area / Locality *"
@@ -351,7 +330,6 @@ const DoctorRegister = () => {
           onChange={handleChange}
         />
 
-        {/* FILE */}
         <input
           type="file"
           name="certificate"

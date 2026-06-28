@@ -1,12 +1,12 @@
 const multer = require("multer");
 const path = require("path");
 
-// ✅ STORAGE CONFIG
+
 const storage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    // ✅ DIFFERENT FOLDERS
+    
     if (file.fieldname === "certificate") {
       cb(null, "uploads/certificates");
     } else if (file.fieldname === "profileImage") {
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 });
 
-// ✅ FILE FILTER
+
 const fileFilter = (req, file, cb) => {
   const allowed = /pdf|jpg|jpeg|png/;
 

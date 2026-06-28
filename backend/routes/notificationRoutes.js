@@ -3,11 +3,6 @@ const Appointment = require("../models/Appointment");
 
 const router = express.Router();
 
-
-// ===================================================
-// TODAY + TOMORROW APPOINTMENTS
-// FOR DOCTOR & PATIENT DASHBOARD
-// ===================================================
 router.get("/today/:userId", async (req, res) => {
   try {
 
@@ -18,7 +13,6 @@ router.get("/today/:userId", async (req, res) => {
 
     const tomorrow = tomorrowDate.toISOString().split("T")[0];
 
-    // FIND APPOINTMENTS
     const appointments = await Appointment.find({
       $or: [
         { doctorId: req.params.userId },
@@ -26,12 +20,10 @@ router.get("/today/:userId", async (req, res) => {
       ]
     }).sort({ date: 1 });
 
-    // TODAY APPOINTMENTS
     const todayAppointments = appointments.filter(
       (a) => a.date === today
     );
 
-    // TOMORROW APPOINTMENTS
     const tomorrowAppointments = appointments.filter(
       (a) => a.date === tomorrow
     );
@@ -52,9 +44,6 @@ router.get("/today/:userId", async (req, res) => {
 });
 
 
-// ===================================================
-// PATIENT NOTIFICATION DROPDOWN
-// ===================================================
 router.get("/notifications/:patientId", async (req, res) => {
 
   try {
@@ -66,17 +55,14 @@ router.get("/notifications/:patientId", async (req, res) => {
 
     const tomorrow = tomorrowDate.toISOString().split("T")[0];
 
-    // PATIENT APPOINTMENTS
     const appointments = await Appointment.find({
       patientId: req.params.patientId
     }).sort({ date: 1 });
 
-    // TODAY
     const todayAppointments = appointments.filter(
       (a) => a.date === today
     );
 
-    // TOMORROW
     const tomorrowAppointments = appointments.filter(
       (a) => a.date === tomorrow
     );

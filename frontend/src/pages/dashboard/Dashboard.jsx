@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FaUser, FaNotesMedical, FaUserMd, FaClipboardList } from "react-icons/fa";
 
-// Dummy user data for role simulation
 const dummyUser = {
   name: "John Doe",
-  role: "patient", // Change to "doctor" or "admin" to test
+  role: "patient", 
 };
 
 export default function Dashboard() {
   const [user, setUser] = useState(dummyUser);
 
-  // Sidebar items per role
   const sidebarItems = {
     patient: [
       { name: "My Profile", icon: <FaUser /> },
@@ -29,7 +27,6 @@ export default function Dashboard() {
     ],
   };
 
-  // Dummy main content per role
   const mainContent = {
     patient: (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -71,7 +68,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    
       <aside className="w-64 bg-blue-800 text-white p-6 flex flex-col">
         <div className="text-2xl font-bold mb-10">Telemedicine</div>
         <nav className="flex-1">
@@ -91,7 +88,7 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* Main Content */}
+    
       <main className="flex-1 p-8">
         <h1 className="text-3xl font-bold text-gray-700 mb-6">
           Welcome, {user.name}!

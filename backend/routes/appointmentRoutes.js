@@ -5,7 +5,6 @@ const Availability = require("../models/Availability");
 const Doctor = require("../models/Doctor");
 const sendEmail = require("../utils/sendEmail");
 
-// ================= CREATE =================
 router.post("/", async (req, res) => {
   try {
     const {
@@ -23,14 +22,12 @@ router.post("/", async (req, res) => {
 
     const io = req.app.get("io");
 
-    // ✅ VALIDATION
     if (!patientId || !doctorId || !patientEmail || !doctorEmail || !date || !startTime || !endTime || !doctorName) {
       return res.status(400).json({
         message: "Missing required fields",
       });
     }
 
-    // ✅ PREVENT DOUBLE BOOKING
     const existing = await Appointment.findOne({
       doctorEmail,
       date,
@@ -60,7 +57,6 @@ router.post("/", async (req, res) => {
 
     await newAppointment.save();
 
-    // ✅ NOTIFY DOCTOR
 
     if (io) {
   io.to(newAppointment.doctorEmail).emit("notification", {
@@ -76,7 +72,6 @@ router.post("/", async (req, res) => {
 });
 
 
-// ================= PATIENT =================
 router.get("/patient/:email", async (req, res) => {
   try {
     const data = await Appointment.find({
@@ -89,22 +84,18 @@ router.get("/patient/:email", async (req, res) => {
   }
 });
 
-// ================= DOCTOR =================
 router.get("/doctor/:email", async (req, res) => {
   try {
     const email = req.params.email.trim().toLowerCase();
 
     const now = new Date();
 
-    // ✅ GET ALL FIRST
     const allAppointments = await Appointment.find();
 
-    // ✅ MATCH EMAIL PROPERLY
     const doctorAppointments = allAppointments.filter(a =>
       a.doctorEmail?.trim().toLowerCase() === email
     );
 
-    // ✅ ONLY FUTURE
     const futureAppointments = doctorAppointments.filter(a => {
       if (!a.date || !a.startTime) return false;
       return new Date(`${a.date}T${a.startTime}`) >= now;
@@ -122,9 +113,6 @@ router.get("/doctor/:email", async (req, res) => {
   }
 });
 
-
-// ================= AVAILABLE SLOTS =================
-// ================= AVAILABLE SLOTS =================
 router.get("/available/:email/:date", async (req, res) => {
   try {
     const { email, date } = req.params;
@@ -137,7 +125,6 @@ router.get("/available/:email/:date", async (req, res) => {
 
     const booked = appointments.map(a => a.startTime);
 
-    // ✅ ADD THIS (GET BLOCKED SLOTS FROM AVAILABILITY)
     const Availability = require("../models/Availability");
 
     const availability = await Availability.findOne({
@@ -155,7 +142,7 @@ router.get("/available/:email/:date", async (req, res) => {
 
     res.json({
       booked,
-      blocked   // ✅ IMPORTANT
+      blocked   
     });
 
   } catch (err) {
@@ -163,7 +150,6 @@ router.get("/available/:email/:date", async (req, res) => {
   }
 });
 
-// ================= STATS =================
 router.get("/stats/:email", async (req, res) => {
   try {
     const data = await Appointment.find({
@@ -182,7 +168,6 @@ router.get("/stats/:email", async (req, res) => {
   }
 });
 
-// ================= APPROVE =================
 router.put("/approve/:id", async (req, res) => {
   try {
     const appt = await Appointment.findByIdAndUpdate(
@@ -205,7 +190,6 @@ router.put("/approve/:id", async (req, res) => {
   }
 });
 
-// ================= RESCHEDULE =================
 router.put("/reschedule/:id", async (req, res) => {
   try {
     const { date, startTime } = req.body;
@@ -216,7 +200,6 @@ router.put("/reschedule/:id", async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    // ✅ PAST DATE CHECK
     const today = new Date();
     const selectedDate = new Date(date);
     today.setHours(0, 0, 0, 0);
@@ -227,11 +210,9 @@ router.put("/reschedule/:id", async (req, res) => {
       });
     }
 
-    // ✅ CREATE END TIME
     const [hour, min] = startTime.split(":");
     const endTime = `${String(parseInt(hour) + 1).padStart(2, "0")}:${min}`;
 
-    // ❌ CHECK SLOT CLASH
     const clash = await Appointment.findOne({
       doctorEmail: appointment.doctorEmail,
       date,
@@ -261,7 +242,6 @@ router.put("/reschedule/:id", async (req, res) => {
   }
 });
 
-// ================= COMPLETE =================
 router.put("/complete/:id", async (req, res) => {
   try {
     await Appointment.findByIdAndUpdate(req.params.id, {
@@ -275,7 +255,6 @@ router.put("/complete/:id", async (req, res) => {
   }
 });
 
-// ================= TODAY + TOMORROW =================
 router.get("/today/:email", async (req, res) => {
   try {
     const email = req.params.email.trim().toLowerCase();

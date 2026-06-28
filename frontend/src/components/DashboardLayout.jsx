@@ -16,7 +16,6 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-gray-100">
 
-      {/* Sidebar */}
       <aside className="w-64 bg-blue-900 text-white p-6">
         <h2 className="text-2xl font-bold mb-8">TeleMedicine</h2>
 
@@ -34,14 +33,12 @@ export default function DashboardLayout({ children }) {
         </ul>
       </aside>
 
-      {/* Logout */}
       <div style={{ position: "absolute", top: 20, right: 20 }}>
         <button onClick={logout}>
           <FaSignOutAlt /> Logout
         </button>
       </div>
 
-      {/* Main */}
       <main className="flex-1 p-8">
         {children}
       </main>

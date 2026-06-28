@@ -2,7 +2,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* TOPBAR */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -13,14 +12,12 @@
   padding: 15px;
 }
 
-/* LEFT */
 .left-top {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* PROFILE AREA */
 .profile-area {
   display: flex;
   align-items: center;
@@ -28,8 +25,6 @@
   position: relative;
 }
 
-
-/* NOTIFICATION ICON */
 .notification-icon{
   position:relative;
   cursor:pointer;
@@ -45,7 +40,6 @@
   transform:scale(1.08);
 }
 
-/* BADGE */
 .notif-badge{
   position:absolute;
   top:-5px;
@@ -63,7 +57,6 @@
   border:1.5px solid white;
 }
 
-/* DROPDOWN */
 .notification-dropdown{
   position:absolute;
   top:55px;
@@ -112,14 +105,12 @@
 }
 
 
-/* PROFILE */
 .profile-img {
   width: 35px;
   height: 35px;
   border-radius: 50%;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 220px;
   background: #1e293b;
@@ -138,7 +129,6 @@
   background: #2563eb;
 }
 
-/* MAIN */
 .main-content {
   padding: 20px;
   flex: 1;
@@ -149,7 +139,6 @@
   display: flex;
 }
 
-/* CARDS */
 .cards-grid {
   display: flex;
   gap: 20px;
@@ -179,7 +168,6 @@
   background: #2563eb;
 }
 
-/* CALL POPUP */
 .call-popup{
   position:fixed;
   bottom:20px;
@@ -208,7 +196,6 @@
   background:#dc2626;
 }
 
-/* ANIMATION */
 @keyframes fadeIn {
   from {
     opacity: 0;

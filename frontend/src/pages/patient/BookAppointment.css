@@ -8,7 +8,6 @@
   margin-bottom: 15px;
 }
 
-/* SPECIALIST HORIZONTAL */
 .specialist-grid {
   display: flex;
   overflow-x: auto;
@@ -34,7 +33,6 @@
   color: white;
 }
 
-/* DOCTOR CARDS */
 .doctor-grid {
   display: flex;
   flex-direction: column;
@@ -72,43 +70,37 @@
   color: green;
 }
 
-/* SLOT GRID */
 .slot-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-/* DEFAULT SLOT = AVAILABLE (GREEN) */
 .slot-btn {
   padding: 10px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: #28a745; /* ✅ GREEN */
+  background: #28a745; 
   color: white;
   transition: 0.3s;
 }
 
-/* HOVER */
 .slot-btn:hover {
   opacity: 0.85;
 }
 
-/* SELECTED SLOT (BLUE) */
 .slot-btn.selected {
   background: #007bff !important;
   color: white;
 }
 
-/* BOOKED SLOT (RED) */
 .slot-btn.booked {
   background: #ff4d4d;
   color: white;
   cursor: not-allowed;
 }
 
-/* BLOCKED SLOT (RED SAME AS BOOKED) */
 .slot-btn.blocked {
   background: #ff4d4d;
   color: white;
@@ -116,14 +108,12 @@
   opacity: 0.8;
 }
 
-/* PAST SLOT (DARK GRAY) */
 .slot-btn.past {
   background: #6c757d;
   color: white;
   cursor: not-allowed;
 }
 
-/* BOOK BUTTON */
 .book-btn {
   margin-top: 10px;
   padding: 10px 20px;

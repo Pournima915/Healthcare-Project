@@ -8,10 +8,10 @@ export default function PatientRegister() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
-    name: "",        // ✅ FIXED
+    name: "",        
     email: "",
     password: "",
-    mobile: "",      // ✅ FIXED
+    mobile: "",      
     gender: "",
     address: "",
   });
@@ -20,7 +20,6 @@ export default function PatientRegister() {
   const [loading, setLoading] = useState(false);
 
 
-  /* ================= VALIDATION ================= */
   const validate = () => {
     let newErrors = {};
 
@@ -55,7 +54,6 @@ export default function PatientRegister() {
   };
 
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -107,7 +105,6 @@ export default function PatientRegister() {
       <form className="login-card" onSubmit={handleSubmit}>
         <h2 className="login-title">Patient Registration</h2>
 
-        {/* NAME */}
         <input
           name="name"
           placeholder="Full Name *"
@@ -117,7 +114,6 @@ export default function PatientRegister() {
         />
         {errors.name && <p className="error">{errors.name}</p>}
 
-        {/* EMAIL */}
         <input
           name="email"
           placeholder="Gmail *"
@@ -127,7 +123,6 @@ export default function PatientRegister() {
         />
         {errors.email && <p className="error">{errors.email}</p>}
 
-        {/* PASSWORD */}
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -153,7 +148,6 @@ export default function PatientRegister() {
         </div>
         {errors.password && <p className="error">{errors.password}</p>}
 
-        {/* MOBILE */}
         <input
           name="mobile"
           placeholder="Mobile *"
@@ -163,7 +157,6 @@ export default function PatientRegister() {
         />
         {errors.mobile && <p className="error">{errors.mobile}</p>}
 
-        {/* GENDER */}
         <select
           name="gender"
           className="login-input"
@@ -177,7 +170,6 @@ export default function PatientRegister() {
         </select>
         {errors.gender && <p className="error">{errors.gender}</p>}
 
-        {/* ADDRESS */}
         <input
           name="address"
           placeholder="Address *"

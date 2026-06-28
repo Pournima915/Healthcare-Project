@@ -17,7 +17,6 @@ socket.on("reconnect_attempt", () => {
   console.log("🔄 Reconnecting...");
 });
 
-// ❌ Disconnected
 socket.on("disconnect", () => {
   console.log("❌ Disconnected");
 });

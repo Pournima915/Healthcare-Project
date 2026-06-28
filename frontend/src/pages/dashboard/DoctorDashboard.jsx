@@ -44,10 +44,8 @@ export default function DoctorDashboard() {
     rescheduled: 0,
   });
 
-  // realtime socket notifications
   const [notifications, setNotifications] = useState([]);
 
-  // appointment notifications
   const [todayAppointments, setTodayAppointments] = useState([]);
   const [tomorrowAppointments, setTomorrowAppointments] = useState([]);
 
@@ -57,7 +55,6 @@ export default function DoctorDashboard() {
 
   const [incomingCall, setIncomingCall] = useState(null);
 
-  // ================= LOAD PATIENTS =================
   useEffect(() => {
 
     if (!doctor?.email) return;
@@ -87,7 +84,6 @@ export default function DoctorDashboard() {
 
   }, [doctor]);
 
-  // ================= AUTH =================
   useEffect(() => {
 
     const stored = localStorage.getItem("doctorAuth");
@@ -117,7 +113,6 @@ export default function DoctorDashboard() {
 
   }, [navigate]);
 
-  // ================= LOAD STATS =================
   const loadStats = async (email) => {
 
     try {
@@ -147,16 +142,11 @@ export default function DoctorDashboard() {
     }
   };
 
-  // ================= LOAD APPOINTMENT NOTIFICATIONS =================
   const loadAppointmentNotifications = async () => {
 
     if (!doctor) return;
 
     try {
-
-      // IMPORTANT:
-      // using doctor.email instead of doctor._id
-      // because backend usually searches by email
 
       const res = await axios.get(
         `http://localhost:5000/api/appointment/doctor/${doctor.email}`
@@ -204,7 +194,6 @@ export default function DoctorDashboard() {
     }
   };
 
-  // ================= SOCKET =================
   useEffect(() => {
 
     if (!doctor) return;
@@ -219,7 +208,6 @@ export default function DoctorDashboard() {
 
       loadStats(doctor.email);
 
-      // refresh appointment notifications
       loadAppointmentNotifications();
 
     });
@@ -241,8 +229,6 @@ export default function DoctorDashboard() {
     };
 
   }, [doctor]);
-
-  // ================= CLOSE DROPDOWN =================
   useEffect(() => {
 
     const handleClickOutside = (e) => {
@@ -269,7 +255,6 @@ export default function DoctorDashboard() {
 
   }, []);
 
-  // ================= ACCEPT CALL =================
   const acceptCall = () => {
 
     socket.emit("call-accepted", {
@@ -290,7 +275,6 @@ export default function DoctorDashboard() {
     }
   };
 
-  // ================= REJECT CALL =================
   const rejectCall = () => {
 
     socket.emit("call-rejected", {
@@ -301,7 +285,6 @@ export default function DoctorDashboard() {
 
   };
 
-  // ================= LOGOUT =================
   const logout = () => {
 
     socket.emit("doctor-offline", doctor.email);
@@ -317,7 +300,6 @@ export default function DoctorDashboard() {
   return (
     <div className="dashboard-container">
 
-      {/* TOPBAR */}
       <header className="topbar">
 
         <FaBars
@@ -328,7 +310,6 @@ export default function DoctorDashboard() {
 
         <div className="profile-area" ref={notifRef}>
 
-          {/* 🔔 BELL ICON */}
           <div
             className="notification-icon"
             onClick={() =>
@@ -352,12 +333,10 @@ export default function DoctorDashboard() {
 
           </div>
 
-          {/* 🔽 NOTIFICATION DROPDOWN */}
           {showNotifications && (
 
             <div className="notification-dropdown">
 
-              {/* REALTIME SOCKET NOTIFICATIONS */}
               {notifications.length > 0 && (
                 <>
                   <h4>🔔 Recent Notifications</h4>
@@ -374,7 +353,6 @@ export default function DoctorDashboard() {
                 </>
               )}
 
-              {/* TODAY */}
               <h4>📅 Today</h4>
 
               {todayAppointments.length === 0 ? (
@@ -399,8 +377,6 @@ export default function DoctorDashboard() {
                 ))
 
               )}
-
-              {/* TOMORROW */}
               <h4>📅 Tomorrow</h4>
 
               {tomorrowAppointments.length === 0 ? (
@@ -443,7 +419,6 @@ export default function DoctorDashboard() {
 
       <div className="body-container">
 
-        {/* SIDEBAR */}
         <aside
           className={`sidebar ${
             sidebarOpen ? "open" : "closed"
@@ -488,13 +463,11 @@ export default function DoctorDashboard() {
 
         </aside>
 
-        {/* MAIN */}
         <main className="main-content">
 
           {activeTab === "dashboard" && (
             <>
 
-              {/* STATS CARDS */}
               <div className="cards-grid">
 
                 <div className="card pending">
@@ -517,7 +490,6 @@ export default function DoctorDashboard() {
 
               </div>
 
-              {/* 📞 INCOMING CALL */}
               {incomingCall && (
                 <div className="call-popup">
 
@@ -544,7 +516,6 @@ export default function DoctorDashboard() {
                 </div>
               )}
 
-              {/* DASHBOARD APPOINTMENT NOTIFICATIONS */}
               <TodayNotifications email={doctor.email} />
 
             </>

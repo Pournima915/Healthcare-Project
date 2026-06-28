@@ -8,10 +8,8 @@ export default function DoctorAvailability() {
   const [duration, setDuration] = useState(60);
   const [slots, setSlots] = useState([]);
 
-  // ✅ Prevent past date
   const today = new Date().toISOString().split("T")[0];
 
-  // ================= GENERATE =================
   const generateSlots = () => {
     if (!date) {
       alert("Please select date");
@@ -35,7 +33,6 @@ export default function DoctorAvailability() {
     setSlots(times);
   };
 
-  // ================= BLOCK / UNBLOCK =================
   const blockSlot = (index) => {
     const updated = [...slots];
 
@@ -45,7 +42,6 @@ export default function DoctorAvailability() {
     setSlots(updated);
   };
 
-  // ================= SAVE =================
   const save = async () => {
     if (!date || slots.length === 0) {
       alert("Generate slots first");
@@ -91,7 +87,6 @@ export default function DoctorAvailability() {
 
       <button onClick={generateSlots}>Generate Slots</button>
 
-      {/* ✅ SLOT UI */}
       <div style={{ marginTop: "15px" }}>
         {slots.map((s, i) => (
           <button

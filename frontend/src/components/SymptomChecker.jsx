@@ -556,7 +556,7 @@ export default function SymptomChecker() {
           placeholder="Type your symptoms..."
         />
 
-        {/* Microphone in middle */}
+      
         <button
           className="mic-btn"
           onClick={toggleRecording}
@@ -583,7 +583,7 @@ export default function SymptomChecker() {
           )}
         </button>
 
-        {/* Send icon on right corner */}
+        
         <button
           className="send-btn"
           onClick={sendMessage}

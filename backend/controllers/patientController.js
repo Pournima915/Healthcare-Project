@@ -2,7 +2,6 @@ const Patient = require("../models/Patient");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-/* ================= REGISTER ================= */
 exports.registerPatient = async (req, res) => {
   try {
     const { name, email, password, mobile, gender, address } = req.body;
@@ -21,7 +20,6 @@ exports.registerPatient = async (req, res) => {
       });
     }
 
-    // Auto increment ID
     const last = await Patient.findOne().sort({ patientId: -1 });
     const patientId = last ? last.patientId + 1 : 1;
 
@@ -47,8 +45,6 @@ exports.registerPatient = async (req, res) => {
   }
 };
 
-
-/* ================= LOGIN ================= */
 exports.loginPatient = async (req, res) => {
   try {
     const { email, password } = req.body;

@@ -36,7 +36,7 @@ const AdminLogin = () => {
           required
         />
 
-        {/*  PASSWORD WITH ICON */}
+        
         <div style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}

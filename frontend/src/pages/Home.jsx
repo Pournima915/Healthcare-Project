@@ -1,4 +1,4 @@
-import React from "react";   // ⭐ FIX ADDED
+import React from "react";   
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import "./Home.css";
@@ -7,7 +7,6 @@ const Home = () => {
   return (
     <div className="home-container">
 
-      {/* HEADER */}
       <motion.div
         className="home-header"
         initial={{ opacity: 0, y: -30 }}
@@ -25,10 +24,9 @@ const Home = () => {
         </p>
       </motion.div>
 
-      {/* ROLE CARDS */}
+      
       <div className="role-section">
-
-        {/* PATIENT */}
+        
         <motion.div className="role-card patient" whileHover={{ scale: 1.03 }}>
           <h2>For Patients</h2>
           <p>Book appointments and consult doctors online.</p>
@@ -44,7 +42,7 @@ const Home = () => {
           </div>
         </motion.div>
 
-        {/* DOCTOR */}
+        
         <motion.div className="role-card doctor" whileHover={{ scale: 1.03 }}>
           <h2>For Doctors</h2>
           <p>Manage appointments and provide consultations.</p>
@@ -62,7 +60,7 @@ const Home = () => {
 
       </div>
 
-      {/* FLOW */}
+      
       <motion.div
         className="appointment-box"
         initial={{ opacity: 0 }}
@@ -70,10 +68,10 @@ const Home = () => {
         transition={{ delay: 0.5 }}
       >
         <h3>⚡ Fast Appointment Booking</h3>
-        <p>Search → Book → Consult → Get Prescription</p>
+        <p> Search → Book → Consult with Specialist Doctors </p>
       </motion.div>
 
-      {/* ADMIN */}
+     
       <div className="admin-access">
         <Link to="/admin/login">Admin Access</Link>
       </div>

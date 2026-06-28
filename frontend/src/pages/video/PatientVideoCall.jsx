@@ -27,7 +27,6 @@ export default function PatientVideoCall() {
     const jitsi = new window.JitsiMeetExternalAPI(domain, options);
     setApi(jitsi);
 
-    // Notify doctor that patient joined
     socket.emit("patient-joined", { appointmentId });
 
     jitsi.addEventListener("readyToClose", () => {
@@ -40,7 +39,6 @@ export default function PatientVideoCall() {
     };
   }, [appointmentId, navigate]);
 
-  // Handle doctor hangup
   useEffect(() => {
     socket.on("end-call", (data) => {
       if (data.appointmentId === appointmentId) {

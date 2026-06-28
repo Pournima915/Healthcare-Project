@@ -48,7 +48,6 @@ export default function PatientLogin() {
         return;
       }
 
-      // ✅ FIXED STORAGE (IMPORTANT)
       localStorage.setItem("patientAuth", JSON.stringify(data.patient));
       localStorage.setItem("token", data.token);
 

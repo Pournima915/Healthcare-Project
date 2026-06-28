@@ -27,13 +27,11 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
 
-  // ================= AUTH =================
   useEffect(() => {
     const admin = localStorage.getItem("adminAuth");
     if (!admin) navigate("/admin/login");
   }, [navigate]);
 
-  // ================= FETCH =================
   useEffect(() => {
     fetchData();
   }, []);
@@ -54,7 +52,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // ================= SOCKET =================
   useEffect(() => {
     socket.on("new-appointment", (data) => {
       setAppointments((prev) => [data, ...prev]);
@@ -63,7 +60,6 @@ export default function AdminDashboard() {
     return () => socket.off("new-appointment");
   }, []);
 
-  // ================= UPDATE DOCTOR =================
   const updateDoctorStatus = async (id, status) => {
     const res = await fetch(`${API}/doctors/${id}`, {
       method: "PUT",
@@ -76,14 +72,11 @@ export default function AdminDashboard() {
       prev.map((d) => (d._id === updated._id ? updated : d))
     );
   };
-
-  // ================= LOGOUT =================
   const logout = () => {
     localStorage.removeItem("adminAuth");
     navigate("/admin/login");
   };
 
-  // ================= FILTER APPOINTMENTS =================
   const filteredAppointments = appointments
     .filter((a) =>
       a.patientName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -101,7 +94,6 @@ export default function AdminDashboard() {
   return (
     <div className="dashboard-container">
 
-      {/* ================= TOPBAR ================= */}
       <header className="topbar">
         <div className="left-top">
           <FaBars onClick={() => setSidebarOpen(!sidebarOpen)} />
@@ -118,7 +110,6 @@ export default function AdminDashboard() {
 
       <div className="body-container">
 
-        {/* ================= SIDEBAR ================= */}
         <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
           <ul>
             <li
@@ -144,10 +135,8 @@ export default function AdminDashboard() {
           </ul>
         </aside>
 
-        {/* ================= MAIN ================= */}
         <main className="main-content">
 
-          {/* ================= DOCTORS TABLE ================= */}
           {activeTab === "doctors" && (
             <>
               <h2>Doctors</h2>
@@ -196,7 +185,6 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ================= PATIENTS TABLE ================= */}
           {activeTab === "patients" && (
             <>
               <h2>Patients</h2>
@@ -223,7 +211,6 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ================= APPOINTMENTS TABLE ================= */}
           {activeTab === "appointments" && (
             <>
               <h2>Appointments</h2>

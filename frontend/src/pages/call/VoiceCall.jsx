@@ -14,7 +14,7 @@ export default function VoiceCall() {
   const [status, setStatus] = useState("Connecting...");
   const [muted, setMuted] = useState(false);
 
-  // extract target email 
+  
   const parts = roomId.split("-");
 const caller = parts[0];
 const receiver = parts[1];
@@ -37,14 +37,13 @@ const targetEmail = myEmail === caller ? receiver : caller;
 
   const initCall = async () => {
     try {
-      // 🎤 Get mic
+     
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
 
       localStreamRef.current = stream;
 
-      // 🔗 Create peer
       const peer = new RTCPeerConnection({
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" }
@@ -53,15 +52,13 @@ const targetEmail = myEmail === caller ? receiver : caller;
 
       peerRef.current = peer;
 
-      // add audio track
+      
       stream.getTracks().forEach(track => peer.addTrack(track, stream));
 
-      // 🎧 receive audio
       peer.ontrack = (event) => {
         audioRef.current.srcObject = event.streams[0];
       };
 
-      // ICE
       peer.onicecandidate = (event) => {
         if (event.candidate) {
           socket.emit("webrtc-ice-candidate", {
@@ -71,7 +68,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
         }
       };
 
-      // ================= SOCKET EVENTS =================
 
       socket.on("webrtc-offer", async ({ offer }) => {
         await peer.setRemoteDescription(new RTCSessionDescription(offer));
@@ -100,7 +96,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
         }
       });
 
-      // ================= CREATE OFFER =================
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
 
@@ -115,7 +110,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
     }
   };
 
-  // ================= MUTE =================
   const toggleMute = () => {
     const track = localStreamRef.current?.getAudioTracks()[0];
     if (!track) return;
@@ -124,7 +118,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
     setMuted(!muted);
   };
 
-  // ================= END CALL =================
   const endCall = () => {
     peerRef.current?.close();
     socket.emit("end-call", { to: targetEmail });
@@ -134,7 +127,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
   return (
     <div className="voice-call-container">
 
-      {/* Hidden audio player */}
       <audio ref={audioRef} autoPlay />
 
       <div className="call-card">
@@ -144,7 +136,6 @@ const targetEmail = myEmail === caller ? receiver : caller;
         <h2>Voice Call</h2>
         <p className="status">{status}</p>
 
-        {/* CONTROLS */}
         <div className="controls">
 
           <button

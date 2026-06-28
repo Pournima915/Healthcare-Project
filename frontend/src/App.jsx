@@ -1,32 +1,28 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./i18n";
-/* Home */
+
 import Home from "./pages/Home";
 
-/* Auth */
 import PatientLogin from "./pages/auth/PatientLogin";
 import PatientRegister from "./pages/auth/PatientRegister";
 import DoctorLogin from "./pages/auth/DoctorLogin";
 import DoctorRegister from "./pages/auth/DoctorRegister";
 import AdminLogin from "./pages/auth/AdminLogin";
 
-/* Dashboards */
 import PatientDashboard from "./pages/dashboard/PatientDashboard";
 import DoctorDashboard from "./pages/dashboard/DoctorDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 
-/* Patient */
+
 import BookAppointment from "./pages/patient/BookAppointment";
 
-/* Video */
+
 import PatientVideoCall from "./pages/video/PatientVideoCall";
 import DoctorVideoCall from "./pages/video/DoctorVideoCall";
 
-/* Protection */
 import ProtectedRoute from "./routes/ProtectedRoute";
 
-/* Reschedule */
 import ReschedulePage from "./pages/ReschedulePage";
 
 import VoiceCall from "./pages/call/VoiceCall";
@@ -36,17 +32,14 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* HOME */}
         <Route path="/" element={<Home />} />
 
-        {/* AUTH */}
         <Route path="/patient/login" element={<PatientLogin />} />
         <Route path="/patient/register" element={<PatientRegister />} />
         <Route path="/doctor/login" element={<DoctorLogin />} />
         <Route path="/doctor/register" element={<DoctorRegister />} />
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* PATIENT */}
         <Route
           path="/patient/dashboard"
           element={
@@ -92,7 +85,6 @@ function App() {
 <Route path="/voice-call/:roomId" element={<VoiceCall />} />
 
 
-        {/* DOCTOR */}
         <Route
           path="/doctor/dashboard"
           element={
@@ -103,8 +95,6 @@ function App() {
         />
 
        
-
-        {/* ADMIN */}
         <Route
           path="/admin/dashboard"
           element={
@@ -114,7 +104,6 @@ function App() {
           }
         />
 
-        {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

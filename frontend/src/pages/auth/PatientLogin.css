@@ -1,4 +1,4 @@
-/* Background gradient full screen */
+
 .login-bg {
   min-height: 100vh;
   display: flex;
@@ -8,7 +8,6 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Card style */
 .login-card {
   background: #ffffff;
   padding: 50px 60px;
@@ -23,7 +22,6 @@
   transform: translateY(-15px);
 }
 
-/* Title */
 .login-title {
   font-size: 40px;
   font-weight: bold;
@@ -31,7 +29,6 @@
   margin-bottom: 30px;
 }
 
-/* Inputs */
 .login-input {
   width: 100%;
   padding: 14px;
@@ -48,7 +45,6 @@
   box-shadow: 0 0 5px rgba(37,99,235,0.5);
 }
 
-/* Button */
 .login-btn {
   width: 100%;
   background-color: #2563eb;
@@ -66,14 +62,12 @@
   transform: translateY(-2px);
 }
 
-/* Footer text */
 .login-footer {
   margin-top: 20px;
   font-size: 20px;
   color: #64748b;
 }
 
-/* Register link */
 .login-link {
   color: #2563eb;
   cursor: pointer;

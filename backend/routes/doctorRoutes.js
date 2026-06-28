@@ -2,25 +2,20 @@ const express = require("express");
 const router = express.Router();
 
 const Doctor = require("../models/Doctor");
-
-// ✅ IMPORT UPLOAD FIRST
 const upload = require("../middleware/upload");
 
 const { registerDoctor, loginDoctor } = require("../controllers/doctorController");
 const authMiddleware = require("../middleware/authMiddleware");
 const { roleCheck } = require("../middleware/roleMiddleware");
 
-// ================= REGISTER =================
 router.post(
   "/register",
   upload.single("certificate"),
   registerDoctor
 );
 
-// ================= LOGIN =================
 router.post("/login", loginDoctor);
 
-// ================= GET ALL DOCTORS =================
 
 router.get("/all", async (req, res) => {
   try {
@@ -34,7 +29,6 @@ router.get("/all", async (req, res) => {
   }
 });
 
-// ================= UPDATE PROFILE =================
 router.put(
   "/update-profile",
   upload.single("profileImage"), 
@@ -67,7 +61,6 @@ router.put(
   }
 );
 
-// ================= DASHBOARD =================
 router.get(
   "/dashboard",
   authMiddleware,
@@ -80,7 +73,6 @@ router.get(
   }
 );
 
-// ================= LOGOUT =================
 router.post("/logout", async (req, res) => {
   try {
     const { email } = req.body;

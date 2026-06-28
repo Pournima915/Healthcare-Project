@@ -59,7 +59,7 @@ useEffect(() => {
 useEffect(() => {
   const interval = setInterval(() => {
     loadAppointments(doctor.email);
-  }, 10000); // every 10 sec
+  }, 10000); 
 
   return () => clearInterval(interval);
 }, [doctor]);

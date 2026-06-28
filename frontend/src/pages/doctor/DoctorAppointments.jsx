@@ -11,7 +11,6 @@ export default function DoctorAppointments() {
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
 
-  // ================= LOAD DOCTOR =================
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("doctorAuth"));
     if (data) {
@@ -21,7 +20,6 @@ export default function DoctorAppointments() {
     }
   }, []);
 
-  // ================= REALTIME =================
   useEffect(() => {
     socket.on("notification", () => {
       if (doctor) loadAppointments(doctor.email);
@@ -30,7 +28,6 @@ export default function DoctorAppointments() {
     return () => socket.off("notification");
   }, [doctor]);
 
-  // ================= LOAD =================
   const loadAppointments = async (email) => {
     try {
       const res = await axios.get(
@@ -42,7 +39,6 @@ export default function DoctorAppointments() {
     }
   };
 
-  // ================= ACTIONS =================
   const approve = async (id) => {
     await axios.put(
       `http://localhost:5000/api/appointment/approve/${id}`
@@ -109,7 +105,7 @@ export default function DoctorAppointments() {
                       {a.startTime} - {a.endTime}
                     </td>
 
-                    {/* STATUS */}
+                   
                     <td>
                       <span className={`status ${status}`}>
                         {status === "pending" && "Waiting"}
@@ -117,7 +113,7 @@ export default function DoctorAppointments() {
                         {status === "rescheduled" && "Rescheduled"}
                       </span>
                     </td>
-                    {/* ACTIONS */}
+                   
                     <td className="actions">
                       {status === "pending" && (
                         <button

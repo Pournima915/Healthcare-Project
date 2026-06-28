@@ -6,7 +6,6 @@
   padding: 20px;
 }
 
-/* Topbar */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -40,13 +39,11 @@
   cursor: pointer;
 }
 
-/* Body */
 .body-container {
   display: flex;
   flex: 1;
 }
 
-/* Sidebar */
 .sidebar {
   width: 220px;
   background: linear-gradient(180deg, #43cea2, #185a9d);
@@ -85,14 +82,12 @@
   display: none;
 }
 
-/* Main */
 .main-content {
   flex: 1;
   padding: 30px;
   overflow-x: auto;
 }
 
-/* Tables */
 
 table {
   width: 100%;

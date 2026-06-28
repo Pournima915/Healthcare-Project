@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Appointment = require("../models/Appointment");
-const Doctor = require("../models/Doctor"); // ✅ ADD THIS
+const Doctor = require("../models/Doctor"); 
 
 const {
   getAllDoctors,
@@ -12,29 +12,25 @@ const {
   deleteDoctor,
 } = require("../controllers/adminController");
 
-// ================= DOCTORS =================
 router.get("/doctors", getAllDoctors);
 router.put("/doctors/:id", updateDoctorStatus);
 router.delete("/doctors/:id", deleteDoctor);
 
-// ================= PATIENTS =================
 router.get("/patients", getAllPatients);
 router.put("/patients/:id", updatePatientStatus);
 
-// ================= APPOINTMENTS =================
 router.get("/appointments", async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
 
     let appointments = await Appointment.find({
-      date: { $gte: today }, // ✅ REMOVE PAST
+      date: { $gte: today }, 
     }).sort({ createdAt: -1 });
 
-    // ================= FIX OLD DATA =================
+    
     const fixedAppointments = await Promise.all(
       appointments.map(async (a) => {
 
-        // ✅ FIX DOCTOR NAME
         if (!a.doctorName && a.doctorId) {
           const doctor = await Doctor.findById(a.doctorId);
           if (doctor) {
@@ -42,7 +38,7 @@ router.get("/appointments", async (req, res) => {
           }
         }
 
-        // ✅ FIX TIME SLOT (for old records)
+        
         if (!a.startTime || !a.endTime) {
           const created = new Date(a.createdAt);
 
@@ -67,7 +63,6 @@ router.get("/appointments", async (req, res) => {
       })
     );
 
-    // ✅ SORT (latest → oldest)
     fixedAppointments.sort((a, b) => {
       const A = new Date(`${a.date} ${a.startTime}`);
       const B = new Date(`${b.date} ${b.startTime}`);

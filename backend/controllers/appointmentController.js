@@ -1,12 +1,10 @@
 const Appointment = require("../models/Appointment");
 const Availability = require("../models/Availability");
 
-// ================= BOOK =================
 exports.bookAppointment = async (req, res) => {
   try {
     const { doctorEmail, patientEmail, patientName, date, time } = req.body;
 
-    // ✅ CHECK BLOCKED SLOT
     const availability = await Availability.findOne({
       doctorEmail,
       date,
@@ -22,7 +20,7 @@ exports.bookAppointment = async (req, res) => {
       }
     }
 
-    // ✅ CHECK DOUBLE BOOKING
+    
     const clash = await Appointment.findOne({
       doctorEmail,
       date,
@@ -57,7 +55,7 @@ exports.bookAppointment = async (req, res) => {
   }
 };
 
-// ================= PATIENT =================
+
 exports.getPatientAppointments = async (req, res) => {
   try {
     const email = req.params.email.trim().toLowerCase();
@@ -73,7 +71,6 @@ exports.getPatientAppointments = async (req, res) => {
   }
 };
 
-// ================= DOCTOR =================
 exports.getDoctorAppointments = async (req, res) => {
   try {
     const email = req.params.email.trim().toLowerCase();
@@ -89,7 +86,6 @@ exports.getDoctorAppointments = async (req, res) => {
   }
 };
 
-// ================= APPROVE =================
 exports.approveAppointment = async (req, res) => {
   try {
     await Appointment.findByIdAndUpdate(req.params.id, {
@@ -103,7 +99,6 @@ exports.approveAppointment = async (req, res) => {
   }
 };
 
-// ================= AVAILABLE SLOTS =================
 exports.getAvailableSlots = async (req, res) => {
   try {
     const { doctorEmail, date } = req.params;
@@ -117,7 +112,6 @@ exports.getAvailableSlots = async (req, res) => {
 
     const bookedTimes = booked.map(a => a.startTime);
 
-    // ✅ GET AVAILABILITY
     const availability = await Availability.findOne({
       doctorEmail: cleanDoctor,
       date
@@ -143,7 +137,7 @@ exports.getAvailableSlots = async (req, res) => {
     res.json({
       available,
       booked: bookedTimes,
-      blocked: blockedTimes // 🔥 NEW
+      blocked: blockedTimes 
     });
 
   } catch (err) {
@@ -151,12 +145,10 @@ exports.getAvailableSlots = async (req, res) => {
   }
 };
 
-// ================= RESCHEDULE =================
 exports.rescheduleAppointment = async (req, res) => {
   try {
     const { date, time, doctorEmail } = req.body;
 
-    // ✅ CHECK BLOCKED SLOT
     const availability = await Availability.findOne({
       doctorEmail,
       date,

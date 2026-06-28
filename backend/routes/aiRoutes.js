@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-// Forward request to Flask Symptom Checker
 router.post("/check", async (req, res) => {
   try {
     const { symptoms } = req.body;

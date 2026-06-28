@@ -44,7 +44,6 @@ export default function PatientProfile({ patient }) {
   }
 );
 
-    // ✅ Update UI instantly
     localStorage.setItem("patientAuth", JSON.stringify({ ...patient, ...form }));
 
     alert("✅ Profile Updated");
@@ -86,7 +85,6 @@ export default function PatientProfile({ patient }) {
         onChange={handleChange}
       />
 
-      {/* PHOTO */}
       <input type="file" onChange={handleFile} />
 
       <button onClick={updateProfile}>

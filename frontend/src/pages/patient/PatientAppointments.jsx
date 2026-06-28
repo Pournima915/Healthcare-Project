@@ -14,9 +14,6 @@ export default function PatientAppointments() {
 
   const navigate = useNavigate();
 
-  // =============================
-  // LOAD PATIENT
-  // =============================
   useEffect(() => {
     const stored = localStorage.getItem("patientAuth");
     if (stored) {
@@ -27,9 +24,6 @@ export default function PatientAppointments() {
     }
   }, []);
 
-  // =============================
-  // FETCH APPOINTMENTS
-  // =============================
   const loadAppointments = async (email) => {
     try {
       const res = await axios.get(
@@ -42,9 +36,6 @@ export default function PatientAppointments() {
     }
   };
 
-  // =============================
-  // LOAD DOCTORS
-  // =============================
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/doctor/all")
@@ -52,9 +43,6 @@ export default function PatientAppointments() {
       .catch((err) => console.log(err));
   }, []);
 
-  // =============================
-  // REALTIME + LOAD
-  // =============================
   useEffect(() => {
     if (!patient?.email) return;
 

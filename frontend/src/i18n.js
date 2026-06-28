@@ -1,7 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-// 🔥 Detect language
 const detectLanguage = () => {
   const saved = localStorage.getItem("lang");
   if (saved) return saved;
@@ -17,7 +16,7 @@ const detectLanguage = () => {
 const resources = {
   en: {
     translation: {
-      // NAV
+      
       dashboard: "Dashboard",
       appointments: "Appointments",
       profile: "Profile",
@@ -26,12 +25,10 @@ const resources = {
       symptom: "Symptom Checker",
       call: "Call",
 
-      // STATUS
       pending: "Pending",
       accepted: "Accepted",
       rescheduled: "Rescheduled",
 
-      // BOOKING
       findDoctors: "Find Doctors",
       searchLocation: "Search by location",
       confirm: "Confirm Appointment",
@@ -39,17 +36,17 @@ const resources = {
       selectTime: "Select Time",
       reason: "Enter reason...",
 
-      // DOCTORS
+      
       onlineDoctors: "Online Doctors",
       noDoctors: "No doctors online",
 
-      // CALL
+      
       video: "Video Call",
       voice: "Voice Call",
       calling: "Calling doctor...",
       rejected: "Doctor rejected the call",
 
-      // SPECIALISTS
+      
       Dentist: "Dentist",
       Cardiologist: "Cardiologist",
       Neurologist: "Neurologist",

@@ -48,7 +48,6 @@ export default function BookAppointment() {
     "General Physician"
   ];
 
-  // ================= LOAD PATIENT =================
   useEffect(() => {
 
     const user = getUserFromStorage("patientAuth");
@@ -70,7 +69,6 @@ export default function BookAppointment() {
 
   }, [navigate]);
 
-  // ================= LOAD DOCTORS =================
   useEffect(() => {
 
     axios.get("http://localhost:5000/api/doctor/all")
@@ -79,7 +77,6 @@ export default function BookAppointment() {
 
   }, []);
 
-  // ================= FETCH BOOKED =================
   useEffect(() => {
 
     if (!selectedDoctor || !date) return;
@@ -98,7 +95,6 @@ export default function BookAppointment() {
 
   }, [selectedDoctor, date]);
 
-  // ================= VALIDATION =================
   const isPastDate = () => {
 
     if (!date) return false;
@@ -131,7 +127,6 @@ export default function BookAppointment() {
     return slotTime < now;
   };
 
-  // ================= BOOK =================
   const handleBooking = async () => {
 
     if (!selectedDoctor) return alert("Select doctor");
@@ -200,7 +195,6 @@ export default function BookAppointment() {
 
   const todayDate = new Date().toISOString().split("T")[0];
 
-  // ================= FILTER =================
   const filteredDoctors = doctors
 
     .filter(d =>
@@ -228,7 +222,6 @@ export default function BookAppointment() {
 
       <h2>{t("Find Doctors")}</h2>
 
-      {/* SEARCH */}
       <input
         type="text"
         placeholder={t("Search by location")}
@@ -237,7 +230,6 @@ export default function BookAppointment() {
         className="location-search"
       />
 
-      {/* SPECIALIST */}
       <div className="specialist-grid">
 
         {specialists.map(spec => (
@@ -264,14 +256,12 @@ export default function BookAppointment() {
 
       </div>
 
-      {/* DOCTORS */}
       <div className="doctor-grid">
 
         {filteredDoctors.map(doc => (
 
           <div key={doc._id}>
 
-            {/* DOCTOR CARD */}
             <div
               className={`doctor-card ${selectedDoctor?._id === doc._id ? "active" : ""}`}
 
@@ -318,7 +308,6 @@ export default function BookAppointment() {
 
             </div>
 
-            {/* BOOKING SECTION */}
             {selectedDoctor?._id === doc._id && (
 
               <div
@@ -331,7 +320,6 @@ export default function BookAppointment() {
                 }}
               >
 
-                {/* DATE */}
                 <h4>Select Date</h4>
 
                 <input
@@ -347,7 +335,6 @@ export default function BookAppointment() {
                   }}
                 />
 
-                {/* TIME */}
                 {date && !isPastDate() && (
                   <>
 
@@ -397,7 +384,6 @@ export default function BookAppointment() {
                   </>
                 )}
 
-                {/* REASON + BOOK */}
                 {selectedSlot && (
                   <>
 

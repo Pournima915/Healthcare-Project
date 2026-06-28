@@ -2,9 +2,7 @@ const Doctor = require("../models/Doctor");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// =============================
-// ✅ REGISTER DOCTOR
-// =============================
+
 exports.registerDoctor = async (req, res) => {
   try {
     const {
@@ -25,7 +23,6 @@ exports.registerDoctor = async (req, res) => {
       longitude,
     } = req.body;
 
-    // check existing doctor
     const existing = await Doctor.findOne({ email });
     if (existing) {
       return res.status(400).json({
@@ -33,13 +30,10 @@ exports.registerDoctor = async (req, res) => {
       });
     }
 
-    // certificate upload
     const certificate = req.file?.filename || "";
 
-    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // create doctor (default status = waiting)
     const doctor = await Doctor.create({
       name,
       email,
@@ -57,7 +51,7 @@ exports.registerDoctor = async (req, res) => {
       latitude,
       longitude,
       certificate,
-      status: "waiting", // ✅ IMPORTANT
+      status: "waiting", 
     });
 
     res.status(201).json({
@@ -71,15 +65,11 @@ exports.registerDoctor = async (req, res) => {
   }
 };
 
-// =============================
-// LOGIN Doctor
-
 
 exports.loginDoctor = async (req, res) => {
   try {
     let { email, password } = req.body;
 
-    // ✅ FIX EMAIL NORMALIZATION
     email = email.toLowerCase().trim();
 
     console.log("LOGIN EMAIL:", email);
@@ -92,7 +82,7 @@ exports.loginDoctor = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // ✅ FINAL FIX (THIS SOLVES YOUR ISSUE)
+    
     if (!doctor.status || doctor.status.toLowerCase().trim() !== "approved") {
       return res.status(403).json({
         message: "Your account is waiting for admin approval",

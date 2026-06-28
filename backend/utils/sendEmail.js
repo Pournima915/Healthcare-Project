@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 
-// ✅ CREATE TRANSPORTER (GLOBAL)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -9,7 +8,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ✅ SINGLE FUNCTION EXPORT
 const sendEmail = async (to, subject, text) => {
   try {
     await transporter.sendMail({
